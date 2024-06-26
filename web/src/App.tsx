@@ -1,21 +1,37 @@
-import { useState } from 'react'
-
 import './App.css'
-import Peer from "peerjs";
+import {Outlet} from "react-router-dom";
 
+export default ()=> {
+    // useCreation(()=>{
+    //     const  peer = new Peer();
+    //     peer.on('open', function(id) {
+    //         console.log('My peer ID is: ' + id);
+    //         // navigator.mediaDevices.getUserMedia(
+    //         //     { video: true, audio: true },
+    //         //     (stream) => {
+    //         //         console.log(stream)
+    //         //         // const call = peer.call(id, stream);
+    //         //         // call.on("stream", (remoteStream) => {
+    //         //         //     // Show stream in some <video> element.
+    //         //         // });
+    //         //     },
+    //         //     (err) => {
+    //         //         console.error("Failed to get local stream", err);
+    //         //     },
+    //         // );
+    //     });
+    //     peer.on("connection", (conn) => {
+    //         conn.on("data", (data) => {
+    //             // Will print 'hi!'
+    //             console.log(data);
+    //         });
+    //         conn.on("open", () => {
+    //             conn.send("hello!");
+    //         });
+    //     });
+    //
+    // },[])
 
-function App() {
-  const [count, setCount] = useState(0)
-
-    const  peer = new Peer();
-    peer.on('open', function(id) {
-        console.log('My peer ID is: ' + id);
-    });
-  return (
-    <>
-      <h1 className={"text-2xl"}>hello</h1>
-    </>
-  )
+  return (<Outlet/>)
 }
 
-export default App

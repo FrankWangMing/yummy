@@ -1,0 +1,256 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table WXUser {
+  openId String [pk]
+  UnionId String [not null]
+  id String [not null]
+  role Role [not null, default: 'UNDEFINED']
+}
+
+Table Admin {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  phone String [unique, not null]
+  username String [not null]
+  password String [not null]
+  userImg String
+}
+
+Table WholesalerUser {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  password String [not null]
+  username String [not null]
+  phone String [unique, not null]
+  order Order [not null]
+  goodsCart GoodsCart
+  userImg String
+}
+
+Table MerchantUser {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  password String [not null]
+  username String [not null]
+  phone String [unique, not null]
+  money Int [not null, default: 0]
+  shop Shop
+  Goods Goods [not null]
+  userImg String
+  shopApplication ShopApplication
+}
+
+Table DriverUser {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  password String [not null]
+  username String [not null]
+  phone String [unique, not null]
+  state UserState [not null, default: 'UNAVAILABLE']
+  userImg String
+}
+
+Table Goods {
+  id String [pk]
+  name String [not null]
+  goodsCategoryId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  shop Shop [not null]
+  shopId String [not null]
+  goodsCategory GoodsCategory [not null]
+  stock Int [not null]
+  price Int [not null]
+  goodsOnOrder GoodsOnOrder [not null]
+  merchantUser MerchantUser [not null]
+  merchantUserId String [not null]
+  goodsImg String[] [not null]
+  mainGoodsImg String [not null]
+}
+
+Table GoodsCategory {
+  id String [pk]
+  name String [not null]
+  goods Goods [not null]
+  createdAt DateTime [default: `now()`, not null]
+  categoriesOnShop CategoriesOnShop [not null]
+}
+
+Table CategoriesOnShop {
+  goodsCategory GoodsCategory [not null]
+  goodsCategoryId String [not null]
+  shop Shop [not null]
+  shopId String [not null]
+  assignedAt DateTime [default: `now()`, not null]
+  assignedBy String [not null]
+
+  indexes {
+    (shopId, goodsCategoryId) [pk]
+  }
+}
+
+Table Shop {
+  id String [pk]
+  name String [not null]
+  merchantUser MerchantUser [not null]
+  merchantUserId String [unique, not null]
+  goods Goods [not null]
+  moveInTime DateTime
+  moveOutTime DateTime
+  recommend Boolean [not null, default: false]
+  shopLevel ShopLevel
+  shopState ShopState [not null, default: 'applying']
+  shopImg String
+  shopAddress String [not null]
+  billingInformation BillingInformation
+  shopLevelId String [unique]
+  ShopApplication ShopApplication [not null]
+  shopApplicationId String [unique, not null]
+  categoriesOnShop CategoriesOnShop [not null]
+}
+
+Table ShopApplication {
+  id String [pk]
+  lengthOfStay Int [not null]
+  appliyState ShopState [not null, default: 'applying']
+  createdAt DateTime [default: `now()`, not null]
+  moneyOfStay Int [not null]
+  description String
+  company Company
+  companyId String [unique]
+  MerchantUser MerchantUser [not null]
+  merchantUserId String [unique, not null]
+  shop Shop
+}
+
+Table Company {
+  id String [pk]
+  companyName String [not null]
+  companyAddress String [not null]
+  companyCode String [not null]
+  companyCard String [not null]
+  companyOwner String [not null]
+  ownerPhone String [not null]
+  ownerID String [not null]
+  ownerIDfrontend String [not null]
+  ownerIDback String [not null]
+  ShopApplication ShopApplication
+}
+
+Table BillingInformation {
+  id String [pk]
+  shop Shop [not null]
+  shopId String [unique, not null]
+}
+
+Table ShopLevel {
+  id String [pk]
+  Shop Shop [not null]
+  name String [not null]
+  money Int [not null]
+  description String
+  commissionRatio Float [not null]
+  handling Float [not null]
+  remark String
+}
+
+Table GoodsOnOrder {
+  goods Goods [not null]
+  goodsId String [not null]
+  order Order [not null]
+  orderId String [not null]
+  assignedAt DateTime [default: `now()`, not null]
+  assignedBy String [not null]
+
+  indexes {
+    (goodsId, orderId) [pk]
+  }
+}
+
+Table Order {
+  id String [pk]
+  wholesalerUser WholesalerUser [not null]
+  goodsOnOrder GoodsOnOrder [not null]
+  createdAt DateTime [default: `now()`, not null]
+  orderState OrderState [not null]
+  payState OrderPayState [not null, default: 'Pending']
+  payMoney Int [not null]
+  payTime DateTime
+  wholesalerUserId String [not null]
+  goodsId String [not null]
+}
+
+Table GoodsCart {
+  id String [pk]
+  goodsId String[] [not null]
+  wholesalerUser WholesalerUser [not null]
+  wholesalerUserId String [unique, not null]
+}
+
+Enum Role {
+  UNDEFINED
+  WHOLESALER
+  MERCHANT
+  DRIVER
+}
+
+Enum ShopState {
+  onLine
+  offline
+  applying
+  turnDown
+}
+
+Enum UserState {
+  AVAILABLE
+  UNAVAILABLE
+}
+
+Enum OrderState {
+  PendingPay
+  Processing
+  Completed
+  Cancel
+}
+
+Enum OrderPayState {
+  Pending
+  Processing
+  Paid
+  Cancelled
+}
+
+Ref: Goods.shopId > Shop.id
+
+Ref: Goods.goodsCategoryId > GoodsCategory.id
+
+Ref: Goods.merchantUserId > MerchantUser.id
+
+Ref: CategoriesOnShop.goodsCategoryId > GoodsCategory.id
+
+Ref: CategoriesOnShop.shopId > Shop.id
+
+Ref: Shop.merchantUserId - MerchantUser.id
+
+Ref: Shop.shopLevelId > ShopLevel.id
+
+Ref: Shop.shopApplicationId - ShopApplication.id
+
+Ref: ShopApplication.companyId - Company.id
+
+Ref: ShopApplication.merchantUserId - MerchantUser.id
+
+Ref: BillingInformation.shopId - Shop.id
+
+Ref: GoodsOnOrder.goodsId > Goods.id
+
+Ref: GoodsOnOrder.orderId > Order.id
+
+Ref: Order.wholesalerUserId > WholesalerUser.id
+
+Ref: GoodsCart.wholesalerUserId - WholesalerUser.id
