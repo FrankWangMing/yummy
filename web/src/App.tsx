@@ -1,7 +1,7 @@
 import './App.css'
 import {Outlet} from "react-router-dom";
 
-export default ()=> {
+const App =  ()=> {
     // useCreation(()=>{
     //     const  peer = new Peer();
     //     peer.on('open', function(id) {
@@ -34,4 +34,6 @@ export default ()=> {
 
   return (<Outlet/>)
 }
+
+export default App
 

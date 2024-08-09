@@ -5,11 +5,9 @@ import { ConfigService } from '@nestjs/config'
 import { AuthService } from './auth.service'
 import { SecurityConfig } from 'src/common/configs/config.interface'
 import { PasswordService } from './password.service'
-import { ServicesModule } from '../../../services/services.module'
 
 @Module({
   imports: [
-    ServicesModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       useFactory: async (configService: ConfigService) => {
@@ -25,6 +23,6 @@ import { ServicesModule } from '../../../services/services.module'
     })
   ],
   providers: [AuthService, JwtService, PasswordService],
-  exports: [AuthService, JwtService, PasswordService, ServicesModule]
+  exports: [AuthService, JwtService, PasswordService]
 })
 export class AuthModule {}

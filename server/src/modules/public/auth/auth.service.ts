@@ -55,35 +55,11 @@ export class AuthService {
     }
   }
 
-  async validateUser(payload: JwtDto, role): Promise<boolean> {
-    const userId = payload.userId
-
+  async validateUser(payload: JwtDto): Promise<boolean> {
+    // const userId = payload.userId
     let result
-    switch (role) {
-      case 'admin':
-        result = this.prisma.admin.findUnique({
-          where: { id: userId }
-        })
-        break
-      case 'merchant':
-        result = this.prisma.merchantUser.findUnique({
-          where: { id: userId },
-          include: {
-            shop: {}
-          }
-        })
-        break
-      case 'wholesaler':
-        result = this.prisma.wholesalerUser.findUnique({
-          where: { id: userId }
-        })
-        break
-      case 'driver':
-        result = this.prisma.driverUser.findUnique({
-          where: { id: userId }
-        })
-        break
-    }
+    // let result = await this.prisma
+
     if (!(await result)) {
       return null
     }

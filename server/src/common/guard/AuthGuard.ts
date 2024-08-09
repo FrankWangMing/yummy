@@ -8,7 +8,6 @@ import { ConfigService } from '@nestjs/config'
 import { get, isNull } from 'lodash'
 import { AuthService } from 'src/modules/public/auth/auth.service'
 import { JwtService } from '@nestjs/jwt'
-import { log } from 'console'
 
 export enum Role {
   Admin,
@@ -37,7 +36,7 @@ export class AuthGuard implements CanActivate {
 
       // 💡 We're assigning the payload to the request object here
       // so that we can access it in our route handlers
-      request.user = await this.auth.validateUser(payload, role)
+      request.user = await this.auth.validateUser(payload)
 
       if (!isNull(request.user)) {
         return true
