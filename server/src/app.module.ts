@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config'
 import { PrismaModule } from 'nestjs-prisma'
 import config from 'src/common/configs/config'
 import { loggingMiddleware } from 'src/common/middleware/logging.middleware'
+import { AppGateway } from './app.gateway'
 
 @Module({
   imports: [
@@ -14,7 +15,11 @@ import { loggingMiddleware } from 'src/common/middleware/logging.middleware'
       }
     })
   ],
-  controllers: [],
-  providers: []
+  controllers: [
+
+  ],
+  providers: [
+    AppGateway
+  ]
 })
-export class AppModule {}
+export class AppModule { }

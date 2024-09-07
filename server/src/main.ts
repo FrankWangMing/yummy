@@ -10,14 +10,9 @@ import type {
   SwaggerConfig
 } from 'src/common/configs/config.interface'
 import { TransformInterceptor } from './common/interception/transform.interception'
-import { RedisIoAdapter } from './common/adapters/redis-io.adapter'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
-  const redisIoAdapter = new RedisIoAdapter(app)
-  await redisIoAdapter.connectToRedis()
-
-  app.useWebSocketAdapter(redisIoAdapter)
 
   // Validation
   app.useGlobalPipes(new ValidationPipe())

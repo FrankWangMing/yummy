@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { get, isNull } from 'lodash'
-import { AuthService } from 'src/modules/public/auth/auth.service'
 import { JwtService } from '@nestjs/jwt'
+import { AuthService } from '../auth/auth.service'
 
 export enum Role {
   Admin,
@@ -21,7 +21,7 @@ export class AuthGuard implements CanActivate {
     private jwtService: JwtService,
     private auth: AuthService,
     readonly configService: ConfigService
-  ) {}
+  ) { }
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest()
     const token = this.extractTokenFromHeader(request)
@@ -36,7 +36,6 @@ export class AuthGuard implements CanActivate {
 
       // 💡 We're assigning the payload to the request object here
       // so that we can access it in our route handlers
-      request.user = await this.auth.validateUser(payload)
 
       if (!isNull(request.user)) {
         return true

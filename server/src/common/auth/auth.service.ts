@@ -4,8 +4,8 @@ import { JwtService } from '@nestjs/jwt'
 import { Token } from './models/token.model'
 import { SecurityConfig } from 'src/common/configs/config.interface'
 import { PrismaService } from 'nestjs-prisma'
-import { JwtDto } from 'src/dto/users/jwt.dto'
 import { log } from 'console'
+import { JwtDto } from './users/jwt.dto'
 
 @Injectable()
 export class AuthService {
@@ -13,7 +13,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private prisma: PrismaService
-  ) {}
+  ) { }
 
   async generateTokens(payload: { userId: string }): Promise<Token> {
     return {
@@ -55,10 +55,10 @@ export class AuthService {
     }
   }
 
-  async validateUser(payload: JwtDto): Promise<boolean> {
-    // const userId = payload.userId
+  async validateUser(payload: JwtDto, role): Promise<boolean> {
+    const userId = payload.userId
+
     let result
-    // let result = await this.prisma
 
     if (!(await result)) {
       return null

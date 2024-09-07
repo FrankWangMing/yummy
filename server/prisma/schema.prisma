@@ -12,26 +12,15 @@ generator dbml {
   provider = "prisma-dbml-generator"
 }
 
-enum Role {
-  UNDEFINED
-  WHOLESALER
-  MERCHANT
-  DRIVER
-}
-
 model User {
-  id         String    @id @unique @default(cuid())
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  password   String
-  username   String
-  userImg    String?
-  MeetRoom   MeetRoom? @relation(fields: [meetRoomId], references: [id])
-  meetRoomId String?
+  id     Int     @id @default(autoincrement())
+  email  String  @unique
+  name   String?
+  Room   Room?   @relation(fields: [roomId], references: [id])
+  roomId Int?
 }
 
-model MeetRoom {
-  id   String @id @unique @default(cuid())
-  name String
-  user User[]
+model Room {
+  id    Int    @id @default(autoincrement())
+  users User[]
 }
