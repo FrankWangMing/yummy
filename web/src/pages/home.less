@@ -1,0 +1,75 @@
+@import "../global";
+
+@bg-color: #D8D8D8;
+@custom-gray: #f0f0f0; // 你可以根据实际颜色值进行调整
+@custom-blue: #0256FF; // 你可以根据实际颜色值进行调整
+@custom-black: #1A1A1A ; // 你可以根据实际颜色值进行调整
+
+
+// 样式定义
+.container {
+  display: flex;
+  align-items: center; /* 垂直居中 */
+  justify-content: center; /* 水平居中 */
+  height: 100vh; /* 需要设置高度 */
+  overflow: hidden;
+
+  .inner-container {
+    width: 80%;
+    min-width: 1200px;
+    height: 90%;
+    margin: 0 auto;
+    background-color: @custom-black;
+    border-radius: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .text-container {
+      flex: 1;
+      justify-content: center;
+      padding-left: 5rem;
+
+      .text {
+        font-weight: 100; // font-thin
+        font-size: 20px;
+        color: white;
+        line-height: 2rem;
+        letter-spacing: 2px;
+        text-align: left;
+      }
+
+      .circle {
+        margin-top: 2.25rem; // mt-9 可能等于 2.25rem，根据实际情况调整
+        background-color: @custom-blue;
+        width: 15.25rem;
+        height: 15.25rem;
+        border-radius: 0 10rem 10rem 0;
+        .circle-text {
+          width: 12.01rem;
+          height: 12.95rem;
+          font-weight: 250;
+          font-size: 18.75rem;
+          color: #FFFFFF;
+          letter-spacing: 24px;
+          text-align: center;
+          font-style: normal;
+          text-transform: none;
+        }
+      }
+    }
+
+    .sign-in-box {
+      box-shadow: @shadow-large;
+      z-index: 10;
+      transform: translateX(1rem) translateY(-2rem);
+      width: 100%;
+      height: 95%;
+      background-color: white;
+      border-radius: 1.5rem;
+      .sign-in-text {
+        font-size: 30px;
+        font-weight: 300;
+      }
+    }
+  }
+}

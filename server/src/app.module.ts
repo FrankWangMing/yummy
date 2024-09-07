@@ -7,6 +7,10 @@ import { AppGateway } from './app.gateway'
 
 @Module({
   imports: [
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 5
+    }),
     ConfigModule.forRoot({ isGlobal: true, load: [config] }),
     PrismaModule.forRoot({
       isGlobal: true,
