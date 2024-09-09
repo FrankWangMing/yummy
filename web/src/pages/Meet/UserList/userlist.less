@@ -2,4 +2,39 @@
 
 .user-list-container {
   height: 50%;
+  .user-list-container-head {
+    height: 5rem;
+    border-bottom: @border;
+  }
+  .user-list-container-content{
+    padding: 0.5rem;
+    .user-list-container-item {
+      display: flex;
+      flex-direction: row;
+      width: 19.5rem;
+      height: 3.75rem;
+      border-radius: 0.63rem 0.63rem 0.63rem 0.63rem;
+      .user-list-container-item-img{
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.5rem 0.5rem 0.5rem 0.5rem;
+      }
+      .user-list-container-item-name{
+        width: 10.06rem;
+        height: 1.06rem;
+        font-family: Alibaba PuHuiTi 2.0, Alibaba PuHuiTi 20;
+        font-weight: 250;
+        font-size: 0.88rem;
+        color: #D1D5DB;
+        line-height: 1.05rem;
+        text-align: left;
+        font-style: normal;
+        text-transform: none;
+        padding-left: 0.5rem;
+      }
+
+
+    }
+  }
+
 }

@@ -26,9 +26,7 @@ const Meet = observer(() => {
               })}
             </Row>
           </div>
-          <div className="meet-content-controller">
-            <Controller />
-          </div>
+          <Controller />
         </div>
         <div className="meet-user-list">
           <UserList />
