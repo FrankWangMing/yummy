@@ -1,3 +1,3 @@
 export class Core {
-  constructor() {}
+  constructor() { }
 }

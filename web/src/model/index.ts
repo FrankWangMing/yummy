@@ -1,5 +1,5 @@
 class Model {
-  constructor() {}
+  constructor() { }
 }
 
 export const store = new Model();
