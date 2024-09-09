@@ -22,12 +22,8 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src/**/*"],
-  "files": [
-    "src/index.ts",
-    "src/app.ts"
-  ],
   "exclude": [
     "node_modules",
-    "**/*.spec.ts"  // 例如，排除测试文件
+    "**/*.spec.ts" // 例如，排除测试文件
   ]
 }

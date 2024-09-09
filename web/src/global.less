@@ -2,23 +2,38 @@
 @shadow-small: 0 2px 4px rgba(0, 0, 0, 0.1);
 @shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.2);
 @shadow-large: 0 6px 12px rgba(0, 0, 0, 0.3);
+@b-radius: 0.63rem 0.63rem 0.63rem 0.63rem;
+@border: 0.06rem solid rgba(75, 85, 99, 0.5);
 
+/* 调整根字体大小以适应不同屏幕尺寸 */
+@media (max-width: 3000px) {
+  html {
+    font-size: 22px; /* 调整为14px */
+  }
+}
+
+/* 调整根字体大小以适应不同屏幕尺寸 */
+@media (max-width: 2000px) {
+  html {
+    font-size: 18px; /* 调整为14px */
+  }
+}
 
 /* 调整根字体大小以适应不同屏幕尺寸 */
 @media (max-width: 1200px) {
   html {
-    font-size: 14px; /* 调整为14px */
+    font-size: 13px; /* 调整为14px */
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 850px) {
   html {
-    font-size: 12px; /* 调整为12px */
+    font-size: 10px; /* 调整为12px */
   }
 }
 
 @media (max-width: 480px) {
   html {
-    font-size: 10px; /* 调整为10px */
+    font-size: 8px; /* 调整为10px */
   }
 }

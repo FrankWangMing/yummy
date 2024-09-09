@@ -1,0 +1,132 @@
+@import "../../../global.less";
+
+.chat-container {
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+  .chat-content-head {
+    width: 20.5rem;
+    height: 2rem;
+    background: rgba(31, 41, 55, 0.5);
+    padding-left: 0.5rem;
+    .chat-content-head-text {
+      font-family:
+        Alibaba PuHuiTi 2,
+        Alibaba PuHuiTi 20;
+      font-weight: 250;
+      font-size: 0.75rem;
+      color: #9ca3af;
+      line-height: 2rem;
+      text-align: left;
+      font-style: normal;
+      text-transform: none;
+    }
+  }
+
+  .chat-content {
+    padding: 0.2rem;
+    flex: 1;
+    .chat-content-message-item {
+      display: flex;
+      flex-direction: row;
+      padding: 0.3rem;
+      .chat-content-message-item-img {
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 10rem;
+        margin: 0 0.5rem;
+      }
+      .chat-content-message-item-content {
+        width: 100%;
+        .chat-content-message-item-time {
+          width: 100%;
+          display: flex;
+          justify-content: flex-end;
+          .chat-content-message-item-time-text {
+            font-family:
+              Alibaba PuHuiTi 2,
+              Alibaba PuHuiTi 20;
+            font-weight: 250;
+            font-size: 0.75rem;
+            color: #6b7280;
+            line-height: 1.06rem;
+            text-align: left;
+            font-style: normal;
+            text-transform: none;
+          }
+        }
+        .chat-content-message-item-context {
+          height: 2.06rem;
+          width: 100%;
+          background: rgba(55, 65, 81, 0.5);
+          border-radius: 0.5rem 0.5rem 0.5rem 0.5rem;
+          border: @border;
+          padding: 0 0.5rem;
+          .chat-container-message-item-context-text {
+            width: 100%;
+            height: 1.06rem;
+            font-family:
+              Alibaba PuHuiTi 2,
+              Alibaba PuHuiTi 20;
+            font-weight: 250;
+            font-size: 0.88rem;
+            color: #d1d5db;
+            line-height: 2rem;
+            text-align: left;
+            font-style: normal;
+            text-transform: none;
+          }
+        }
+      }
+    }
+
+    .chat-content-message-item-left {
+      display: flex;
+      flex-direction: row;
+    }
+    .chat-content-message-item-right {
+      display: flex;
+      flex-direction: row-reverse;
+    }
+  }
+
+  .chat-content-message-input {
+    display: flex;
+    width: 100%;
+    height: 6.25rem;
+    .chat-content-message-input-container {
+      position: relative;
+      border: @border;
+      width: 100%;
+
+      .chat-content-message-input-area {
+        background-color: inherit !important;
+        border: none;
+        width: 100%;
+        height: 100%;
+        color: white;
+        font-weight: 250;
+        &:focus {
+            border: none !important;
+            box-shadow: none !important;
+        }
+        &::placeholder {
+          font-family:
+            Alibaba PuHuiTi 2,
+            Alibaba PuHuiTi 20;
+          font-weight: 250;
+          color: #6b7280;
+          text-align: left;
+          font-style: normal;
+          text-transform: none;
+        }
+      }
+      .chat-content-message-input-send {
+        position: absolute;
+        z-index: 9;
+        right: 1rem;
+        bottom: 1rem;
+      }
+    }
+  }
+}

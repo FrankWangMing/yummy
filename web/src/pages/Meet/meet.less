@@ -1,0 +1,54 @@
+@import "../../global.less";
+.meet-background {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #34363a;
+  height: 100vh;
+  width: 100vw;
+  .meet-container {
+    min-width: 75rem;
+    width: 75rem;
+    min-height: 50rem;
+    height: 50rem;
+    background: rgba(31, 41, 55, 0.5);
+    border: 0.06rem solid rgba(55, 65, 81, 0.5);
+    border-radius: @b-radius;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    .meet-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      .meet-content-navbar {
+        background-color: #17202e;
+        height: 5rem;
+        border: 0.06rem solid rgba(55, 65, 81, 0.5);
+      }
+      .meet-content-live {
+        flex: 1;
+        background-color: #101826;
+        padding: 2rem;
+        border: 0.06rem solid rgba(55, 65, 81, 0.5);
+        .meet-content-live-item {
+          width: 15rem;
+          height: 11rem;
+          // padding: 0 !important;
+        }
+      }
+      .meet-content-controller {
+        background-color: #17202e;
+        height: 5rem;
+        border: 0.06rem solid rgba(55, 65, 81, 0.5);
+      }
+    }
+    .meet-user-list {
+      width: 18rem;
+      background-color: #17202e;
+      border: 0.06rem solid rgba(55, 65, 81, 0.5);
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}

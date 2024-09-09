@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "ahooks": "^3.8.0",
@@ -15,6 +16,7 @@
     "mobx": "^6.13.0",
     "mobx-react-lite": "^4.0.7",
     "peerjs": "^1.5.4",
+    "prettier": "^3.3.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.24.1"

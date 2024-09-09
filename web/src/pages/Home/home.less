@@ -1,13 +1,12 @@
 @import "../../global";
 
-@bg-color: #D8D8D8;
+@bg-color: #d8d8d8;
 @custom-gray: #f0f0f0; // 你可以根据实际颜色值进行调整
-@custom-blue: #0256FF; // 你可以根据实际颜色值进行调整
-@custom-black: #1A1A1A ; // 你可以根据实际颜色值进行调整
-
+@custom-blue: #0256ff; // 你可以根据实际颜色值进行调整
+@custom-black: #1a1a1a; // 你可以根据实际颜色值进行调整
 
 // 样式定义
-.container {
+.home-container {
   display: flex;
   align-items: center; /* 垂直居中 */
   justify-content: center; /* 水平居中 */
@@ -49,7 +48,7 @@
           height: 12.95rem;
           font-weight: 250;
           font-size: 18.75rem;
-          color: #FFFFFF;
+          color: #ffffff;
           letter-spacing: 24px;
           text-align: center;
           font-style: normal;
@@ -61,11 +60,16 @@
     .sign-in-box {
       box-shadow: @shadow-large;
       z-index: 10;
+      padding: 0 15%;
       transform: translateX(1rem) translateY(-2rem);
       width: 100%;
       height: 95%;
       background-color: white;
       border-radius: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       .sign-in-text {
         font-size: 30px;
         font-weight: 300;

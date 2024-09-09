@@ -1,4 +1,3 @@
-export class Core{
-    constructor() {
-    }
+export class Core {
+  constructor() {}
 }

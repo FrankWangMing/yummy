@@ -1,60 +1,83 @@
-import { Button, Checkbox, Form, FormProps, Input } from "antd";
+import { Button, Checkbox, Divider, Form, FormProps, Input } from "antd";
 import { observer } from "mobx-react-lite";
+import "./form.less";
+import { routers } from "../../config/routers";
+import { useNavigate } from "react-router-dom";
 
 type FieldType = {
-    username?: string;
-    password?: string;
-    remember?: string;
+  username?: string;
+  password?: string;
+  remember?: string;
+  meetingID?: string;
+};
+
+export const LoginForm = observer(() => {
+  const navigate = useNavigate();
+  const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
+    console.log("Success:", values);
+  };
+  const onMeetFinish: FormProps<FieldType>["onFinish"] = (values) => {
+    console.log("Success:", values);
+    navigate("/meeting");
   };
 
-  const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-    console.log('Success:', values);
+  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
+    errorInfo,
+  ) => {
+    console.log("Failed:", errorInfo);
   };
-
-  const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
-export const LoginForm = observer(()=>{
-    return <div>
-       <Form
+  return (
+    <div>
+      <Form
         name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
         style={{ maxWidth: 600 }}
         initialValues={{ remember: true }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
-    >
-    <Form.Item<FieldType>
-      label="Username"
-      name="username"
-      rules={[{ required: true, message: 'Please input your username!' }]}
-    >
-      <Input />
-    </Form.Item>
+      >
+        <Form.Item<FieldType>
+          name="username"
+          rules={[{ required: true, message: "Please input your username!" }]}
+        >
+          <Input placeholder="Email" className="input" />
+        </Form.Item>
 
-    <Form.Item<FieldType>
-      label="Password"
-      name="password"
-      rules={[{ required: true, message: 'Please input your password!' }]}
-    >
-      <Input.Password />
-    </Form.Item>
-
-    <Form.Item<FieldType>
-      name="remember"
-      valuePropName="checked"
-      wrapperCol={{ offset: 8, span: 16 }}
-    >
-      <Checkbox>Remember me</Checkbox>
-    </Form.Item>
-
-    <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-      <Button type="primary" htmlType="submit">
-        Submit
-      </Button>
-    </Form.Item>
-  </Form>
+        <Form.Item<FieldType>
+          name="password"
+          rules={[{ required: true, message: "Please input your password!" }]}
+        >
+          <Input type="password" placeholder="Password" className="input" />
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit" className="button">
+            <span className="button-text">Sign in</span>
+          </Button>
+        </Form.Item>
+        <div></div>
+        <Divider className="divider">
+          <div className="divider-content">OR</div>
+        </Divider>
+      </Form>
+      <Form
+        name="meeting"
+        style={{ maxWidth: 600 }}
+        initialValues={{ remember: true }}
+        onFinish={onMeetFinish}
+        autoComplete="off"
+      >
+        <Form.Item<FieldType>
+          name="meetingID"
+          rules={[{ required: true, message: "Please input your Meeting ID!" }]}
+        >
+          <Input value={123} placeholder="Meeting ID" className="input" />
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit" className="button">
+            <span className="button-text">Join Meeting</span>
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
-})
+  );
+});
