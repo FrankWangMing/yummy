@@ -1,10 +1,14 @@
-import { io, Socket } from "socket.io-client";
+import { io, Manager, Socket } from "socket.io-client";
 
+
+const webSocketUrl = "ws://101.42.33.99:3000"
 
 export class SocketCore {
   socket: Socket;
   constructor() {
-    this.socket = io();
+    const manager = new Manager(webSocketUrl, {})
+    this.socket = manager.socket('/room');
+
 
   }
 
