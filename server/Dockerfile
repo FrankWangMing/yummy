@@ -1,36 +1,38 @@
-FROM node:alpine AS builder
+FROM node:20-alpine AS builder
 
-# Create app directory
+# Set working directory inside the container
 WORKDIR /app
 
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-COPY package.json ./
-COPY yarn.lock ./
-COPY prisma ./prisma/
+# Copy package.json and pnpm-lock.yaml first to leverage Docker cache
+COPY package.json pnpm-lock.yaml ./
 
-RUN yarn set version 4.1.0
-# Install app dependencies
-RUN npm config set registry https://registry.npm.taobao.org/
+# Install dependencies using pnpm
+RUN npm install -g pnpm && pnpm install --frozen-lockfile
 
-RUN yarn cache clean
-RUN yarn
-
+# Copy the rest of the application code
 COPY . .
-RUN yarn set version 4.1.0
-RUN yarn run build
 
-FROM node:alpine
+RUN npx prisma generate
+# Build the NestJS application
+RUN pnpm run build
 
+# Stage 2: Create a lightweight production image
+FROM node:20-alpine AS runner
+
+# Set NODE_ENV to production
+# ENV NODE_ENV=production
+
+# Set working directory for the runner stage
 WORKDIR /app
 
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/yarn.lock ./
+# Copy the built application from the builder stage
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/.env .env
-COPY --from=builder /app/prisma ./prisma/
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/.env ./
 
-
-
+# Expose the port that NestJS runs on
 EXPOSE 3000
-CMD [ "yarn", "run", "start:prod" ]
+
+# Run the application
+CMD ["node", "dist/main"]

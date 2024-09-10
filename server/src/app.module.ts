@@ -4,7 +4,7 @@ import { PrismaModule } from 'nestjs-prisma'
 import config from 'src/common/configs/config'
 import { loggingMiddleware } from 'src/common/middleware/logging.middleware'
 import { AppGateway } from './app.gateway'
-
+import { CacheModule } from '@nestjs/cache-manager'
 @Module({
   imports: [
     CacheModule.register({

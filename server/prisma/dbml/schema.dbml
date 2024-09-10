@@ -3,27 +3,16 @@
 //// ------------------------------------------------------
 
 Table User {
-  id String [pk]
-  createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
-  password String [not null]
-  username String [not null]
-  userImg String
-  MeetRoom MeetRoom
-  meetRoomId String
+  id Int [pk, increment]
+  email String [unique, not null]
+  name String
+  Room Room
+  roomId Int
 }
 
-Table MeetRoom {
-  id String [pk]
-  name String [not null]
-  user User [not null]
+Table Room {
+  id Int [pk, increment]
+  users User [not null]
 }
 
-Enum Role {
-  UNDEFINED
-  WHOLESALER
-  MERCHANT
-  DRIVER
-}
-
-Ref: User.meetRoomId > MeetRoom.id
+Ref: User.roomId > Room.id
