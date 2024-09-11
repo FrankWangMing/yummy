@@ -1,18 +1,39 @@
-import { useEffect, useRef } from "react";
-import { RTCPeer } from "./RTCPeerConnection";
-import { core } from "../../core";
+import { useEffect, useRef, useState } from "react";
+import { Core, core } from "../../core";
+import { Button, Input } from "antd";
 const Test = () => {
-  console.log(core)
-  console.log(core.peerMap.host.sdp)
+  const {current} = useRef<Core>(core);
+  console.log(current);
   const video = useRef<HTMLVideoElement | null>(null);
-
+  const remoteVideo = useRef<HTMLVideoElement | null>(null);
   useEffect(() => {
     if(video.current){
-      // (async ()=>{
-      //   video.current.srcObject = await core.mediaController.getUserMedia()
-      // })()
+      (async ()=>{
+        video.current.srcObject = await core.mediaController.getUserMedia()
+      })()
     }
   },[])
+
+  setTimeout(()=>{
+    if(remoteVideo.current!=null){
+      console.log("remoteVideo")
+      console.log(core.peerController.host);
+
+      core.peerController.host.addEventListener("track",event=>{
+        console.log("track")
+        const [remoteStream] = event.streams;
+        remoteVideo.current!.srcObject = remoteStream;
+      })
+    }
+  },2000)
+  const [meet_id,setMeetId]=useState("");
+  const createMeeting = async () => {
+    current.createMeeting();
+  }
+
+  const joinMeeting = () => {
+    current.joinMeeting(meet_id);
+  }
 
   // console.log(video);
   // useEffect(() => {
@@ -75,6 +96,20 @@ const Test = () => {
         width={100}
         style={{ background: "blue" }}
       ></video>
+      <video
+        ref={remoteVideo}
+        autoPlay
+        height={100}
+        width={100}
+        style={{ background: "blue" }}
+      ></video>
+      <Button onClick={createMeeting}>create Meeting</Button>
+      <Input
+        placeholder="Enter Meeting Id"
+        value={meet_id}
+        onChange={(e) => setMeetId(e.target.value)}
+      ></Input>
+      <Button onClick={joinMeeting}>join Meeting</Button>
     </>
   );
 };

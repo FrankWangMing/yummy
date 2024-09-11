@@ -1,23 +1,42 @@
 import { MediaController } from "./medias";
-import {  PeerMap } from "./peer";
+import {  PeerController } from "./peer";
 import { SocketCore } from "./socket";
 
 export class Core {
-  public peerMap: PeerMap = new PeerMap()
 
-  public socketCore: SocketCore = new SocketCore()
 
-  public mediaController: MediaController = new MediaController()
 
-  constructor() {
+  constructor(
+    public peerController: PeerController,
+    public mediaController: MediaController,
+    public socketCore: SocketCore
+  ) {}
 
-    console.log(this.peerMap.host)
-    console.log(this.mediaController)
+  public create(){ }
+
+  public online(){}
+
+
+  createMeeting(){
+    this.peerController.createHost()
+    this.socketCore.sendMessage("createRoom")
 
   }
 
-  public create(){ }
+  joinMeeting(meet_id:string){
+    this.socketCore.sendMessage("joinRoom",{
+      meet_id
+    })
+
+  }
+
+  joinRoom(){
+
+  }
+
 }
 
-
-export const core = new Core()
+export const socketCore = new SocketCore()
+export const mediaController: MediaController = new MediaController()
+export const peerController: PeerController = new PeerController(socketCore,mediaController)
+export const core = new Core(peerController,mediaController,socketCore)

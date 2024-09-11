@@ -1,7 +1,6 @@
-import { Button, Checkbox, Divider, Form, FormProps, Input } from "antd";
+import { Button, Divider, Form, FormProps, Input } from "antd";
 import { observer } from "mobx-react-lite";
 import "./form.less";
-import { routers } from "../../config/routers";
 import { useNavigate } from "react-router-dom";
 
 type FieldType = {

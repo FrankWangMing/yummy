@@ -1,9 +1,7 @@
 export class MediaController{
 
     navigator:Navigator = navigator;
-    constructor(){
-
-    }
+    constructor(){}
     get mediaDevices(){
         return this.navigator.mediaDevices;
     }
@@ -14,4 +12,7 @@ export class MediaController{
         });
     }
 }
+
+
+
 

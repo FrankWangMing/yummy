@@ -13,7 +13,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private prisma: PrismaService
-  ) { }
+  ) {}
 
   async generateTokens(payload: { userId: string }): Promise<Token> {
     return {
