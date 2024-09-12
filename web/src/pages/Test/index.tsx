@@ -2,38 +2,38 @@ import { useEffect, useRef, useState } from "react";
 import { Core, core } from "../../core";
 import { Button, Input } from "antd";
 const Test = () => {
-  const {current} = useRef<Core>(core);
+  const { current } = useRef<Core>(core);
   console.log(current);
   const video = useRef<HTMLVideoElement | null>(null);
   const remoteVideo = useRef<HTMLVideoElement | null>(null);
   useEffect(() => {
-    if(video.current){
-      (async ()=>{
-        video.current.srcObject = await core.mediaController.getUserMedia()
-      })()
+    if (video.current) {
+      (async () => {
+        video.current.srcObject = await core.mediaController.getUserMedia();
+      })();
     }
-  },[])
+  }, []);
 
-  setTimeout(()=>{
-    if(remoteVideo.current!=null){
-      console.log("remoteVideo")
-      console.log(core.peerController.host);
+  // setTimeout(()=>{
+  //   if(remoteVideo.current!=null){
+  //     console.log("remoteVideo")
+  //     console.log(core.peerController.host);
 
-      core.peerController.host.addEventListener("track",event=>{
-        console.log("track")
-        const [remoteStream] = event.streams;
-        remoteVideo.current!.srcObject = remoteStream;
-      })
-    }
-  },2000)
-  const [meet_id,setMeetId]=useState("");
+  //     core.peerController.host.addEventListener("track",event=>{
+  //       console.log("track")
+  //       const [remoteStream] = event.streams;
+  //       remoteVideo.current!.srcObject = remoteStream;
+  //     })
+  //   }
+  // },3000)
+  const [meet_id, setMeetId] = useState("");
   const createMeeting = async () => {
     current.createMeeting();
-  }
+  };
 
   const joinMeeting = () => {
     current.joinMeeting(meet_id);
-  }
+  };
 
   // console.log(video);
   // useEffect(() => {

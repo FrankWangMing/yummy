@@ -65,16 +65,15 @@ export class UserGateway
         console.error(err)
       })
   }
-
   @SubscribeMessage('offer')
-  sdp(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
-    // console.log('offer', message)
-    let { user_id, sdp } = data
-    client.data.sdp = sdp
+  offer(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
+    // this.client.emit("events",{name:client.id})
+    let { user_id } = data
+    this.userModel.deleteMany()
     this.userModel
       .findOneAndUpdate(
         { user_id },
-        { $set: { socket_id: client.id, sdp } },
+        { $set: { socket_id: client.id } },
         { new: true, upsert: true }
       )
       .then((r) => {
@@ -83,6 +82,30 @@ export class UserGateway
       .catch((err) => {
         console.error(err)
       })
+  }
+
+  @SubscribeMessage('call')
+  call(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
+    // console.log('offer', message)
+    const { user_id,meet_id, offer } = data
+    console.log(meet_id)
+    client.data.offer = offer
+    this.userModel
+      .findOneAndUpdate(
+        { user_id },
+        { $set: { socket_id: client.id, offer } },
+        { new: true, upsert: true }
+      )
+    client.to(meet_id).emit('call', { data: data })
+  }
+
+  @SubscribeMessage('answer')
+  answer(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
+    console.log(data)
+    const { meet_id } = data
+    const event = 'answer'
+    console.log(meet_id)
+    client.to(meet_id).emit('answer', { event, data: data })
   }
 
   @SubscribeMessage('events')

@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { HydratedDocument } from 'mongoose'
+import { HydratedDocument, Schema as MongooseSchema } from 'mongoose'
 
 export type UserDocument = HydratedDocument<User>
 
@@ -11,8 +11,8 @@ export class User {
   @Prop()
   socket_id: string
 
-  @Prop()
-  sdp: string
+  @Prop({ type: MongooseSchema.Types.Mixed })
+  offer: Record<string, any>
 
   @Prop()
   room_id: string

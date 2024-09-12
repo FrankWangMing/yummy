@@ -16,7 +16,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { Room } from './schemas/room.schema'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { Server } from 'socket.io';
+import { Server } from 'socket.io'
 @WebSocketGateway({
   namespace: 'room',
   cors: {
@@ -26,31 +26,21 @@ import { Server } from 'socket.io';
   }
 })
 export class RoomGateway {
-
-  @WebSocketServer() server:Server
+  @WebSocketServer() server: Server
 
   constructor(
     private readonly roomService: RoomService,
     @InjectModel(Room.name) private readonly roomModel: Model<Room>
-  ) {
-
-
-
-  }
+  ) {}
 
   @SubscribeMessage('createRoom')
-  create(
-    @MessageBody() data,
-    @ConnectedSocket() socket: Socket
-  ) {
-
-    const {user_id} = data
+  create(@MessageBody() data, @ConnectedSocket() socket: Socket) {
+    const { user_id } = data
     const room_id = uuidv4()
 
-    this.roomModel.create({room_id,user_id:[user_id]})
+    this.roomModel.create({ room_id, user_id: [user_id] })
     socket.join(room_id)
-    console.log(room_id)
-    // return this.roomService.create(createRoomDto)
+    return { event:"createMeeting", data: { meet_id:room_id } }
   }
 
   @SubscribeMessage('findAllRoom')
@@ -59,24 +49,26 @@ export class RoomGateway {
   }
 
   @SubscribeMessage('joinRoom')
-  join(
-    @MessageBody() data,
-    @ConnectedSocket() socket: Socket) {
+  join(@MessageBody() data, @ConnectedSocket() socket: Socket) {
     // socket.leave()
     // socket.to(data)
     console.log(data)
-    const {meet_id} =data
+    const { meet_id } = data
     // socket.to(meet_id).emit('joinRoom',{name:'join',socket_id:socket.id})
 
-
-
     socket.join(meet_id)
-    socket.to(meet_id).emit("joinRoom",{name:'join',socket_id:socket.id,offer:{
-        type: 'offer', // 或 'answer'
-        sdp: socket.data.sdp
-      }})
-    // socket.emit("joinRoom",{name:'join',socket_id:socket.id})
-    // return this.roomService.findAll()
+
+    socket
+      .to(meet_id)
+      .emit('joinRoom', {
+        name: 'joinRoom',
+        meet_id,
+        socket_id: socket.id,
+      })
+    // // socket.emit("joinRoom",{name:'join',socket_id:socket.id})
+    // // return this.roomService.findAll()
+    // const event = 'call'
+    // return { event, data: { offer, meet_id } }
   }
 
   @SubscribeMessage('findOneRoom')
