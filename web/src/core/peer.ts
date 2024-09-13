@@ -18,7 +18,7 @@ export class Peer extends RTCPeerConnection {
           urls: 'stun:stun.l.google.com:19302'
         }
       ],
-      // iceTransportPolicy: 'all'
+      iceTransportPolicy: 'all'
     })
     this.type = type
     this.init()
