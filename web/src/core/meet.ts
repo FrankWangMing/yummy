@@ -3,53 +3,39 @@ import { MediaController } from './medias.ts'
 import { Chat } from './chat.ts'
 import { socketCore } from './index.ts'
 import { Api } from './http.ts'
+import { filter, forEach } from 'lodash'
+import { Tools } from './tools.ts'
 
-export class Meet extends Map<string,Chat> {
+export class Meet extends Map<string, Chat> {
+  meet_id!: string
   constructor(
-    public api:Api,
+    public api: Api,
     public socketCore: SocketCore,
     public mediaController: MediaController,
   ) {
     super()
-    socketCore.on("createRoom", () => {
-    })
-    // this.socketCore.on("call",async (message:any)=>{
-    //     console.log(message)
-    //     const peerConnection = chat.remote
-    //     await peerConnection.setRemoteDescription(new RTCSessionDescription(message.data.offer))
-    //     const answer = await peerConnection.initAnswer()
-    //     peerConnection.setLocalDescription(answer)
-    //     this.socketCore.sendMessage("answer",{meet_id,answer})
-    // })
-    // this.socketCore.on("answer",async (message:any)=>{
-    //     console.log(message)
-    //     const peerConnection = chat.local
-    //     const {meet_id,answer} = message.data
-    //     const remoteDesc = new RTCSessionDescription(answer);
-    //     await peerConnection.setRemoteDescription(remoteDesc);
-    // })
-    socketCore.on("joinRoom",(message:unknown)=>{
-      const {socket_id,meet_id} = message
-      // this.
-      // this.makeCall()
-      console.log(socketCore.socket.id)
-      console.log(socket_id)
-      console.log(meet_id)
+
+    socketCore.on("joinMeet", (message: any) => {
       console.log(message)
 
       //有人加入，创建 chat
-      // this.create(message)
+      this.create(this.meet_id, message.user_id)
+
     })
-    socketCore.on("createMeeting",(e)=>{
+
+    socketCore.on("createMeeting", (e) => {
       console.log(e)
     })
 
-    socketCore.on("iceCandidate",(message:any)=>{
+    socketCore.on("iceCandidate", (message: any) => {
       console.log(message)
     })
-    socketCore.on("call",(message:any)=>{
+    socketCore.on("call", (message: any) => {
       console.log(message)
-  })
+    })
+    socketCore.on("leaveMeet", (message: any) => {
+      console.log(message)
+    })
     // socketCore.on("call",async (message:any)=>{
     //   const offer = message.offer
     //   const meet_id = message.meet_id
@@ -99,18 +85,45 @@ export class Meet extends Map<string,Chat> {
     //   }
     // })
 
+
+
   }
 
-  async createMeeting(){
-    // this.socketCore.sendMessage("createRoom")
-    const r = await this.api.createMeet()
+  async createMeeting() {
+    // this.socketCore.sendMessage("createMeet")
+    const { meet_id } = await this.api.createMeet()
+    this.meet_id = meet_id
+    console.log(meet_id)
+  }
+  async reconnectMeeting() {
+    if (socketCore.socket.disconnected) {
+      await this.socketCore.socket.connect()
+      const result = await this.api.reconnectMeet()
+      console.log("meet_id", result)
+      // await this.joinMeeting(meet_id)
+    }
+  }
+
+  async leaveMeeting() {
+    console.log(this.meet_id)
+    if (socketCore.socket.connected) {
+      await this.api.leaveMeet(this.meet_id)
+      await this.socketCore.socket.disconnect()
+    }
+
+  }
+
+  async joinMeeting(meet_id: string) {
+    this.meet_id = meet_id
+    const r = await this.api.joinMeet(meet_id)
     console.log(r)
+    const { user_ids } = r
+    forEach(user_ids, i => {
+      console.log(user_ids)
+      this.create(meet_id, i)
+    })
 
-  }
 
-  async joinMeeting(meet_id:string){
-      const r = await this.api.joinMeet(meet_id)
-      console.log(r)
 
 
     //   socketCore.on("answer",async (message:any)=>{
@@ -140,7 +153,7 @@ export class Meet extends Map<string,Chat> {
 
   }
 
-  create(meet_id: string,user_id:string) {
+  create(meet_id: string, user_id: string) {
     const chat = new Chat(this, meet_id, socketCore)
     console.log("create")
     this.set(user_id, chat)

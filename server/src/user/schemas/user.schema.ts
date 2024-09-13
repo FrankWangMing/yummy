@@ -11,11 +11,11 @@ export class User {
   @Prop()
   socket_id: string
 
-  @Prop({ type: MongooseSchema.Types.Mixed })
-  offer: Record<string, any>
+  @Prop()
+  name: string
 
   @Prop()
-  room_id: string
+  meet_id: string
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)

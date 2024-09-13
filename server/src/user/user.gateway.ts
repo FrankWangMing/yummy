@@ -14,9 +14,11 @@ import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager'
 import { User } from './schemas/user.schema'
 import { Model } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose'
+import { UserService } from './user.service'
+import { MeetService } from 'src/meet/meet.service'
 
 @WebSocketGateway({
-  namespace: 'room',
+  namespace: 'meet',
   cors: {
     origin: 'http://localhost:5173',
     methods: ['GET', 'POST'],
@@ -24,79 +26,59 @@ import { InjectModel } from '@nestjs/mongoose'
   }
 })
 export class UserGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   constructor(
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    @InjectModel(User.name) private readonly userModel: Model<User>
-  ) {}
+    // @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    public userService: UserService,
+    public meetService: MeetService,
+  ) { }
+
 
   afterInit(socket: Socket) {
-    // socket.on('connect', (r) => {
-    //   this.handleConnection(socket.client)
-    // })
+    socket.on('connect', (r) => {
+      this.handleConnection(socket)
+    })
+
     socket.on('disconnect', (r) => {
-      console.log(r)
       this.handleDisconnect(socket)
     })
   }
-  handleConnection(client: any, ...args: any[]): any {}
-
-  handleDisconnect(client: Socket): any {
-    console.log(client.rooms)
-    console.log('disconnect')
+  handleConnection(client: Socket): any {
   }
+
+  async handleDisconnect(client: Socket): Promise<any> {
+    try {
+      console.log(client.id)
+      const r = await this.userService.findOne({
+        socket_id: client.id
+      })
+      console.log("handleDisconnect", r)
+      client.to(r.meet_id).except(client.id).emit('leaveMeet', {
+        message: "掉线",
+        user_id: r.user_id
+      })
+      await this.meetService.deleteUserIdInMeet(r.meet_id, r.user_id)
+      console.log(r)
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
+
 
   @SubscribeMessage('YummyConnect')
-  create(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
-    // this.client.emit("events",{name:client.id})
-    let { user_id } = data
-    this.userModel.deleteMany()
-    this.userModel
-      .findOneAndUpdate(
-        { user_id },
-        { $set: { socket_id: client.id } },
-        { new: true, upsert: true }
-      )
-      .then((r) => {
-        console.log(r)
-      })
-      .catch((err) => {
-        console.error(err)
-      })
+  async connect(@MessageBody() data, @ConnectedSocket() socket: Socket) {
+    // console.log("YummyConnect", data)
+    let result = await this.userService.findOneAndUpdate(data.user_id, data)
+    // console.log(result)
   }
-  @SubscribeMessage('offer')
-  offer(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
-    // this.client.emit("events",{name:client.id})
-    let { user_id } = data
-    this.userModel.deleteMany()
-    this.userModel
-      .findOneAndUpdate(
-        { user_id },
-        { $set: { socket_id: client.id } },
-        { new: true, upsert: true }
-      )
-      .then((r) => {
-        console.log(r)
-      })
-      .catch((err) => {
-        console.error(err)
-      })
-  }
+
 
   @SubscribeMessage('call')
   call(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
-    // console.log('offer', message)
-    const { user_id,meet_id, offer } = data
-    console.log(meet_id)
-    client.data.offer = offer
-    this.userModel
-      .findOneAndUpdate(
-        { user_id },
-        { $set: { socket_id: client.id, offer } },
-        { new: true, upsert: true }
-      )
-    client.to(meet_id).emit('call', { data: data })
+    console.log("call", data)
+    client.to(data.meet_id).emit('call', data)
+
   }
 
   @SubscribeMessage('answer')
@@ -105,13 +87,13 @@ export class UserGateway
     const { meet_id } = data
     const event = 'answer'
     console.log(meet_id)
-    client.to(meet_id).emit('answer', { event, data: data })
+    client.to(meet_id).emit('answer', data)
   }
 
-  @SubscribeMessage('events')
-  handleEvent(@MessageBody() data: unknown): WsResponse<unknown> {
-    console.log(data)
-    const event = 'events'
-    return { event, data: 'JKJK' }
-  }
+  // @SubscribeMessage('events')
+  // handleEvent(@MessageBody() data: unknown): WsResponse<unknown> {
+  //   console.log(data)
+  //   const event = 'events'
+  //   return { event, data: 'JKJK' }
+  // }
 }

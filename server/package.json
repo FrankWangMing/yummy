@@ -1,13 +1,11 @@
 {
   "name": "yummy-server",
   "version": "0.0.1",
-  "description": "NestJS Prisma Client Starter Project",
+  "description": "Yummy Server",
   "author": "Frank",
   "license": "MIT",
   "keywords": [
     "nestjs",
-    "prisma",
-    "prisma client",
     "typescript",
     "passport"
   ],
@@ -21,24 +19,11 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "migrate:dev": "prisma migrate dev --preview-feature",
-    "migrate:dev:add": "prisma migrate dev --name add-fields",
-    "migrate:dev:change": "migrate dev --name type-change",
-    "migrate:dev:create": "prisma migrate dev --create-only --preview-feature",
-    "migrate:reset": "prisma migrate reset --preview-feature",
-    "migrate:deploy": "npx prisma migrate deploy --preview-feature",
-    "migrate:status": "npx prisma migrate status --preview-feature",
-    "migrate:resolve": "npx prisma migrate resolve --preview-feature",
-    "prisma:studio": "npx prisma studio",
-    "prisma:generate": "npx prisma generate",
-    "prisma:generate:watch": "npx prisma generate --watch",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "start:db": "npm run migrate:up && npm run prisma:generate && npm run seed",
-    "seed": "prisma db seed",
     "docker:migrate": "docker-compose -f docker-compose.migrate.yml up -d",
     "docker:db": "docker-compose -f docker-compose.db.yml up -d",
     "docker:seed": "docker exec -it market npm run seed",
@@ -46,7 +31,6 @@
     "docker:build": "docker-compose build"
   },
   "dependencies": {
-    "@devoxa/prisma-relay-cursor-connection": "3.1.1",
     "@nestjs/axios": "^3.0.3",
     "@nestjs/cache-manager": "^2.2.2",
     "@nestjs/common": "10.4.1",
@@ -60,7 +44,6 @@
     "@nestjs/platform-socket.io": "^10.4.1",
     "@nestjs/swagger": "7.3.0",
     "@nestjs/websockets": "^10.4.1",
-    "@prisma/client": "^5.19.1",
     "@socket.io/redis-adapter": "^8.3.0",
     "axios": "^1.7.7",
     "bcrypt": "5.1.1",
@@ -71,7 +54,6 @@
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
     "mongoose": "^8.6.1",
-    "nestjs-prisma": "0.23.0",
     "passport": "0.7.0",
     "passport-jwt": "4.0.1",
     "redis": "^4.7.0",
@@ -85,7 +67,6 @@
     "@nestjs/cli": "10.3.2",
     "@nestjs/schematics": "10.1.1",
     "@nestjs/testing": "10.3.2",
-    "@prisma/fetch-engine": "^5.19.1",
     "@types/bcrypt": "5.0.2",
     "@types/chance": "1.1.6",
     "@types/express": "4.17.21",
@@ -104,8 +85,6 @@
     "eslint-plugin-prettier": "^5.2.1",
     "jest": "29.7.0",
     "prettier": "^3.3.3",
-    "prisma": "^5.19.1",
-    "prisma-dbml-generator": "0.10.0",
     "supertest": "6.3.4",
     "ts-jest": "29.1.2",
     "ts-loader": "9.5.1",
@@ -134,9 +113,6 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  },
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
   },
   "packageManager": "pnpm@9.5.0+sha512.140036830124618d624a2187b50d04289d5a087f326c9edfc0ccd733d76c4f52c3a313d4fc148794a2a9d81553016004e6742e8cf850670268a7387fc220c903"
 }

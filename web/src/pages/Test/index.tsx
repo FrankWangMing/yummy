@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Button, Input } from "antd";
-import { Meet } from '../../core/meet.ts'
-import { meet } from '../../core'
+import { Meet } from "../../core/meet.ts";
+import { meet } from "../../core";
+import { Tools } from "../../core/tools.ts";
 const Test = () => {
   const { current } = useRef<Meet>(meet);
   console.log(current);
@@ -34,6 +35,14 @@ const Test = () => {
 
   const joinMeeting = () => {
     current.joinMeeting(meet_id);
+  };
+
+  const reconnectMeeting = () => {
+    current.reconnectMeeting();
+  };
+
+  const leaveMeeting = () => {
+    current.leaveMeeting();
   };
 
   // console.log(video);
@@ -110,7 +119,10 @@ const Test = () => {
         value={meet_id}
         onChange={(e) => setMeetId(e.target.value)}
       ></Input>
+      <div>{Tools.UserID()}</div>
       <Button onClick={joinMeeting}>join Meeting</Button>
+      <Button onClick={reconnectMeeting}>reconnect Meeting</Button>
+      <Button onClick={leaveMeeting}>leave Meeting</Button>
     </>
   );
 };

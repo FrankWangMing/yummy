@@ -5,8 +5,8 @@ import config from 'src/common/configs/config'
 import { loggingMiddleware } from 'src/common/middleware/logging.middleware'
 import { CacheModule } from '@nestjs/cache-manager'
 import { MongooseModule } from '@nestjs/mongoose'
+import { MeetModule } from './meet/meet.module'
 import { UserModule } from './user/user.module'
-import { RoomModule } from './room/room.module'
 const uri =
   'mongodb+srv://frank:LmxpnwjLlMe4PUFS@frank.vn97nj2.mongodb.net/?retryWrites=true&w=majority&appName=frank'
 // const uri =
@@ -26,10 +26,10 @@ const uri =
         middlewares: [loggingMiddleware(new Logger('PrismaMiddleware'))] // configure your prisma middleware
       }
     }),
-    UserModule,
-    RoomModule
+    MeetModule,
+    UserModule
   ],
   controllers: [],
   providers: []
 })
-export class AppModule {}
+export class AppModule { }

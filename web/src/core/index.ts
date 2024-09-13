@@ -5,7 +5,7 @@ import { Api } from './http.ts'
 
 export const socketCore = new SocketCore()
 export const mediaController: MediaController = new MediaController()
-export const http = new Api()
+export const http = new Api(socketCore)
 
 
-export const meet = new Meet(http,socketCore,mediaController)
+export const meet = new Meet(http, socketCore, mediaController)
