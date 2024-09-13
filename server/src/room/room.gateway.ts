@@ -1,22 +1,11 @@
-import {
-  WebSocketGateway,
-  SubscribeMessage,
-  MessageBody,
-  ConnectedSocket,
-  OnGatewayInit,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
-  WebSocketServer
-} from '@nestjs/websockets'
+import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets'
 import { RoomService } from './room.service'
-import { CreateRoomDto } from './dto/create-room.dto'
-import { UpdateRoomDto } from './dto/update-room.dto'
-import { Socket } from 'socket.io'
+import { Server, Socket } from 'socket.io'
 import { v4 as uuidv4 } from 'uuid'
 import { Room } from './schemas/room.schema'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { Server } from 'socket.io'
+
 @WebSocketGateway({
   namespace: 'room',
   cors: {
@@ -31,21 +20,13 @@ export class RoomGateway {
   constructor(
     private readonly roomService: RoomService,
     @InjectModel(Room.name) private readonly roomModel: Model<Room>
-  ) {}
+  ) {
+  }
 
   @SubscribeMessage('createRoom')
   create(@MessageBody() data, @ConnectedSocket() socket: Socket) {
-    const { user_id } = data
-    const room_id = uuidv4()
-
-    this.roomModel.create({ room_id, user_id: [user_id] })
-    socket.join(room_id)
-    return { event:"createMeeting", data: { meet_id:room_id } }
-  }
-
-  @SubscribeMessage('findAllRoom')
-  findAll() {
-    return this.roomService.findAll()
+    console.log(data)
+    return this.roomService.create(data)
   }
 
   @SubscribeMessage('joinRoom')
@@ -53,7 +34,7 @@ export class RoomGateway {
     // socket.leave()
     // socket.to(data)
     console.log(data)
-    const { meet_id } = data
+    const { meet_id,user_id } = data
     // socket.to(meet_id).emit('joinRoom',{name:'join',socket_id:socket.id})
 
     socket.join(meet_id)
@@ -63,7 +44,8 @@ export class RoomGateway {
       .emit('joinRoom', {
         name: 'joinRoom',
         meet_id,
-        socket_id: socket.id,
+        user_id,
+        socket_id: socket.id
       })
     // // socket.emit("joinRoom",{name:'join',socket_id:socket.id})
     // // return this.roomService.findAll()
@@ -77,17 +59,12 @@ export class RoomGateway {
   }
 
   @SubscribeMessage('updateRoom')
-  update(@MessageBody() updateRoomDto: UpdateRoomDto) {
-    return this.roomService.update(updateRoomDto.id, updateRoomDto)
+  update(@MessageBody() updateRoomDto) {
+    return this.roomService.update(updateRoomDto.id)
   }
 
   @SubscribeMessage('leaveRoom')
   leaveRoom(@MessageBody() id: number) {
-    return this.roomService.remove(id)
-  }
-
-  @SubscribeMessage('leaveRoom')
-  leave(@MessageBody() id: number) {
     return this.roomService.remove(id)
   }
 }

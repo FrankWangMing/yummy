@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import { Core, core } from "../../core";
 import { Button, Input } from "antd";
+import { Meet } from '../../core/meet.ts'
+import { meet } from '../../core'
 const Test = () => {
-  const { current } = useRef<Core>(core);
+  const { current } = useRef<Meet>(meet);
   console.log(current);
   const video = useRef<HTMLVideoElement | null>(null);
   const remoteVideo = useRef<HTMLVideoElement | null>(null);
   useEffect(() => {
     if (video.current) {
       (async () => {
-        video.current.srcObject = await core.mediaController.getUserMedia();
+        video.current.srcObject = await meet.mediaController.getUserMedia();
       })();
     }
   }, []);

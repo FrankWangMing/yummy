@@ -10,6 +10,10 @@ export class Room {
 
   @Prop()
   room_id: string
+
+  @Prop()
+  owner_id: string
+
 }
 
 export const RoomSchema = SchemaFactory.createForClass(Room)

@@ -21,8 +21,8 @@ export class SocketCore {
     this.online();
   }
 
-  sendMessage(type: MessageType, data: Record<string, unknown> = {}) {
-    this.socket.emit(type, {
+  sendMessage(type: MessageType, data: Record<string, unknown> = {}):Socket {
+   return this.socket.emit(type, {
       ...data,
       user_id: sessionStorage.getItem("user_id"),
     });
