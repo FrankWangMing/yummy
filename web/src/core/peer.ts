@@ -1,12 +1,7 @@
+import { get, isNull } from "lodash";
 import { Chat } from "./chat";
 
-const iceServer = { // stun 服务，如果要做到 NAT 穿透，还需要 turn 服务
-  iceServers: [
-    {
-      urls: "stun:stun.l.google.com:19302"
-    }
-  ]
-};
+
 
 type PeerType = "local" | "remote"
 export class Peer extends RTCPeerConnection {
@@ -17,7 +12,14 @@ export class Peer extends RTCPeerConnection {
     public chat: Chat,
     type: PeerType
   ) {
-    super(iceServer)
+    super({
+      iceServers: [
+        {
+          urls: 'stun:stun.l.google.com:19302'
+        }
+      ],
+      // iceTransportPolicy: 'all'
+    })
     this.type = type
     this.init()
   }
@@ -25,33 +27,33 @@ export class Peer extends RTCPeerConnection {
     return { sdp: this._offer.sdp }
   }
 
-  init() {
+  async init() {
+
     this.onsignalingstatechange = async (event) => {
       console.log("onsignalingstatechange", event)
       console.log(this.signalingState)
     }
     this.oniceconnectionstatechange = async (event) => {
-      console.log("oniceconnectionstatechange", event)
+      console.log(this.type)
+      console.log("ICE  状态:", this.iceConnectionState);
     }
-    this.onconnectionstatechange = async (event) => {
-      console.log("onconnectionstatechange", event)
-    }
-    this.onicecandidate = async (event) => {
-      console.log("onicecandidate", event)
-      console.log(event)
-      let otherPeer: Peer
-      if (this.type == 'local') {
-        otherPeer = this.chat.remote
-        otherPeer.addIceCandidate(event.candidate)
-      }
-      if (this.type == 'remote') {
-        otherPeer = this.chat.local
-        otherPeer.addIceCandidate(event.candidate)
-      }
-    }
+    this.onconnectionstatechange = () => {
+      console.log(this.type)
+      console.log("连接状态:", this.connectionState);
+    };
 
     this.ontrack = (event) => {
       console.log('track', event)
+    }
+
+    if (this.type == 'local') {
+      const localStream = await this.chat.meet.mediaController.getUserMedia()
+      localStream.getTracks().forEach(track => {
+        // console.log("track", track)
+        // console.log(localStream);
+        this.addTrack(track, localStream);
+      });
+
     }
 
   }

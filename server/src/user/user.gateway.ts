@@ -20,7 +20,7 @@ import { MeetService } from 'src/meet/meet.service'
 @WebSocketGateway({
   namespace: 'meet',
   cors: {
-    origin: 'http://localhost:5173',
+    origin: "*",
     methods: ['GET', 'POST'],
     credentials: true
   }
@@ -81,6 +81,7 @@ export class UserGateway
 
   }
 
+
   @SubscribeMessage('answer')
   answer(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
     console.log(data)
@@ -90,10 +91,10 @@ export class UserGateway
     client.to(meet_id).emit('answer', data)
   }
 
-  // @SubscribeMessage('events')
-  // handleEvent(@MessageBody() data: unknown): WsResponse<unknown> {
-  //   console.log(data)
-  //   const event = 'events'
-  //   return { event, data: 'JKJK' }
-  // }
+  @SubscribeMessage('iceCandidate')
+  handleEvent(@MessageBody() data: unknown): WsResponse<unknown> {
+    console.log(data)
+    const event = 'events'
+    return { event: "iceCandidate", data }
+  }
 }

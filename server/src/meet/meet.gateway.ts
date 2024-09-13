@@ -11,7 +11,7 @@ import { UserService } from '../user/user.service'
 @WebSocketGateway({
   namespace: 'meet',
   cors: {
-    origin: 'http://localhost:5173',
+    origin: "*",
     methods: ['GET', 'POST'],
     credentials: true
   }
