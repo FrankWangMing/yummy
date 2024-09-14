@@ -1,24 +1,40 @@
 import { Chat } from "./chat";
+import { VideoController } from "./videoDom";
 
 
 
 export class Peer extends RTCPeerConnection {
+  public videoController: VideoController
+
   constructor(
     public chat: Chat,
   ) {
-    super({
-      iceServers: [
-        {
-          urls: 'stun:stun.l.google.com:19302'
-        }
-      ],
-      iceTransportPolicy: 'all'
-    })
-    this.init()
+    super(
+    //    { iceServers: [
+    //     {
+    //       urls: 'stun:stun.l.google.com:19302'
+    //     }
+    //   ],
+    //   iceTransportPolicy: 'all'
+    // }
+  )
+    this.videoController = chat.meet.videoController
   }
 
 
   async init() {
+
+    this.onicecandidate = (event) => {
+      if (event.candidate) {
+        this.chat.socketCore.sendMessage("iceCandidate", {
+          candidate: event.candidate,
+          // candidate: event.candidate.candidate,
+          // sdpMid :event.candidate.sdpMid,
+          // sdpMLineIndex:event.candidate.sdpMLineIndex,
+        })
+      }
+    }
+    const localStream = await this.chat.meet.mediaController.getUserMedia()
 
     this.onsignalingstatechange = async (event) => {
       console.log("onsignalingstatechange", event)
@@ -32,21 +48,18 @@ export class Peer extends RTCPeerConnection {
     };
 
     this.ontrack = (event) => {
-      console.log('track', event)
+      console.log("ontrack",event)
+      // !.setState({
+      //   srcObject:event.streams[0]
+      // })
+      // console.log(
+      //   this.videoController.get("remote")
+      // )
+      console.log(document.getElementById("remoteVideo"))
+      document.getElementById("remoteVideo")!.srcObject = event.streams[0];
     }
-    this.onicecandidate = (event) => {
-      // console.log("onicecandidate", event)
-      if (event.candidate) {
-        this.chat.socketCore.sendMessage("iceCandidate", {
-          candidate: event.candidate,
-        })
-      }
-    }
-
-    const localStream = await this.chat.meet.mediaController.getUserMedia()
     localStream.getTracks().forEach(track => {
       // console.log("track", track)
-      // console.log(localStream);
       this.addTrack(track, localStream);
     });
 
@@ -57,26 +70,16 @@ export class Peer extends RTCPeerConnection {
     return offer
   }
 
-  async initAnswer() {
+  async answer() {
     const answer = await super.createAnswer()
     return answer
   }
 
-
-  setRemote(offer: RTCSessionDescriptionInit) {
-    this.setRemoteDescription(offer)
-  }
-
-  async call() {
+  async offer() {
     // localStream.getTracks().forEach(track => pc1.addTrack(track, localStream));
     const offer = await this.initOffer()
-    await this.setLocalDescription(offer)
     return offer
   }
 
-
-  answer() {
-
-  }
 }
 

@@ -49,7 +49,7 @@ export class MeetController {
   @Post('join')
   joinMeet(@Body() body, @Headers('user_id') user_id: string) {
     const { meet_id, socket_id } = body
-    this.meetGateWay.server.to(meet_id).except(socket_id).emit("joinMeet", {
+    this.meetGateWay.server.to(meet_id).emit("joinMeet", {
       user_id
     })
     return this.meetService.joinMeet({

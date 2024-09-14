@@ -20,4 +20,7 @@ export class Tools {
     }
     return user_id;
   }
+  static uuid(){
+    return generateUUID()
+  }
 }

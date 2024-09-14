@@ -2,7 +2,6 @@ import { ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { HttpAdapterHost, NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-import { PrismaClientExceptionFilter } from 'nestjs-prisma'
 import { AppModule } from './app.module'
 import type {
   CorsConfig,
@@ -18,8 +17,6 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe())
 
   // Prisma Client Exception Filter for unhandled exceptions
-  const { httpAdapter } = app.get(HttpAdapterHost)
-  app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter))
   const configService = app.get(ConfigService)
   const nestConfig = configService.get<NestConfig>('nest')
   const corsConfig = configService.get<CorsConfig>('cors')

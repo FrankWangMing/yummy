@@ -1,10 +1,10 @@
 import { Peer } from "./peer";
 import { SocketCore } from "./socket";
 import { Meet } from './meet.ts'
-import { get, isNull } from "lodash";
+import { Tools } from "./tools.ts";
 
 export class Chat {
-    public local: Peer
+    public local: Peer | undefined
     public list: any = []
 
     constructor(
@@ -12,52 +12,58 @@ export class Chat {
         public meet_id: string,
         public socketCore: SocketCore,
     ) {
-        // this.remote = new Peer(this, "remote")
-
-        let pendingIceCandidates: any = []
-
-        this.socketCore.on("iceCandidate", async (message: any) => {
-            if (!isNull(get(message, "candidate", null))) {
-                if (this.local.remoteDescription) {
-                    await this.local.addIceCandidate(new RTCIceCandidate(message.candidate)).catch((error) => {
-                        console.error('Failed to add ICE candidate:', error);
-                    });
-                } else {
-                    pendingIceCandidates.push(message.candidate); // 暂时保存候选者
-                }
-            }
-        })
-        this.socketCore.on("call", async (message: any) => {
-            this.local = new Peer(this)
-            await this.local.init()
-
-            const peerConnection = this.local
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(message.offer))
-            if (pendingIceCandidates.length > 0) {
-                for (const candidate of pendingIceCandidates) {
-                    await peerConnection.addIceCandidate(candidate);
-                }
-                pendingIceCandidates = []; // 清空候选者队列
-            }
-            const answer = await peerConnection.initAnswer()
-            peerConnection.setLocalDescription(answer)
-            this.socketCore.sendMessage("answer", { meet_id, answer })
-        })
-        this.socketCore.on("answer", async (message: any) => {
-            console.log(message)
-            const peerConnection = this.local
-            const { meet_id, answer } = message
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
-        })
-
+        this.socketCore.on("iceCandidate",this.handleCandidate.bind(this))
+        this.socketCore.on("call", this.handleOffer.bind(this))
+        this.socketCore.on("answer", this.handleAnswer.bind(this))
     }
 
-    async call() {
-        this.local = new Peer(this)
-        await this.local.init()
-        const offer = await this.local.call()
-        this.socketCore.sendMessage("call", { offer, meet_id: this.meet_id })
+    async makeCall (user_id) {
+        const check  =  Object.is(user_id,Tools.UserID())
+        if(!check) {
+            const peerConnection= new Peer(this);
+            await peerConnection.init()
+            const offer = await peerConnection.offer()
+            await peerConnection.setLocalDescription(offer)
+            this.socketCore.sendMessage("call", { offer:{type: 'offer', sdp: offer.sdp}, meet_id: this.meet_id })
+            this.local  = peerConnection
+        }
     }
 
+    async handleOffer({offer}){
+        console.log(offer)
+        console.log(this)
+        // if(isUndefined(this.local)){
 
+        // }
+
+        const peerConnection = new Peer(this)
+        await peerConnection.init()
+        await peerConnection.setRemoteDescription(offer);
+        const answer = await peerConnection.answer();
+        this.socketCore.sendMessage("answer", { meet_id:this.meet_id, answer : {type: 'answer', sdp: answer.sdp} })
+        peerConnection.setLocalDescription(answer)
+        this.local = peerConnection
+    }
+    async handleAnswer({answer}) {
+        console.log(answer)
+        console.log(this.local)
+        if(!this.local){
+            return
+        }
+        await this.local.setRemoteDescription(answer);
+    }
+
+    async handleCandidate({candidate}) {
+        if (!this.local) {
+          console.error('no peerconnection');
+          return;
+        }
+        if (!candidate) {
+          await this.local.addIceCandidate(null);
+        } else {
+            if(this.local.remoteDescription){
+                await this.local.addIceCandidate(candidate);
+            }
+        }
+      }
 }

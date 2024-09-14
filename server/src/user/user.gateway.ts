@@ -47,21 +47,21 @@ export class UserGateway
   }
 
   async handleDisconnect(client: Socket): Promise<any> {
-    try {
-      console.log(client.id)
-      const r = await this.userService.findOne({
-        socket_id: client.id
-      })
-      console.log("handleDisconnect", r)
-      client.to(r.meet_id).except(client.id).emit('leaveMeet', {
-        message: "掉线",
-        user_id: r.user_id
-      })
-      await this.meetService.deleteUserIdInMeet(r.meet_id, r.user_id)
-      console.log(r)
-    } catch (error) {
-      console.log(error)
-    }
+    // try {
+    //   console.log(client.id)
+    //   const r = await this.userService.findOne({
+    //     socket_id: client.id
+    //   })
+    //   console.log("handleDisconnect", r)
+    //   client.to(r.meet_id).except(client.id).emit('leaveMeet', {
+    //     message: "掉线",
+    //     user_id: r.user_id
+    //   })
+    //   await this.meetService.deleteUserIdInMeet(r.meet_id, r.user_id)
+    //   console.log(r)
+    // } catch (error) {
+    //   console.log(error)
+    // }
 
   }
 
@@ -93,7 +93,6 @@ export class UserGateway
 
   @SubscribeMessage('iceCandidate')
   handleEvent(@MessageBody() data: unknown): WsResponse<unknown> {
-    console.log(data)
     const event = 'events'
     return { event: "iceCandidate", data }
   }

@@ -3,8 +3,7 @@ import { MediaController } from './medias.ts'
 import { Chat } from './chat.ts'
 import { socketCore } from './index.ts'
 import { Api } from './http.ts'
-import { filter, forEach } from 'lodash'
-import { Tools } from './tools.ts'
+import { VideoController } from './videoDom.tsx'
 
 export class Meet extends Map<string, Chat> {
   meet_id!: string
@@ -12,6 +11,7 @@ export class Meet extends Map<string, Chat> {
     public api: Api,
     public socketCore: SocketCore,
     public mediaController: MediaController,
+    public videoController: VideoController,
   ) {
     super()
 
@@ -20,9 +20,9 @@ export class Meet extends Map<string, Chat> {
 
       //有人加入，创建 chat
       const chat = this.create(this.meet_id, message.user_id)
-      chat.call()
-    })
+      chat.makeCall(message.user_id)
 
+    })
   }
 
   async createMeeting() {
@@ -52,12 +52,12 @@ export class Meet extends Map<string, Chat> {
   async joinMeeting(meet_id: string) {
     this.meet_id = meet_id
     const r = await this.api.joinMeet(meet_id)
-    console.log(r)
-    const { user_ids } = r
-    forEach(user_ids, i => {
-      console.log(user_ids)
-      this.create(meet_id, i)
-    })
+    // console.log(r)
+    // const { user_ids } = r
+    // forEach(user_ids, i => {
+    //   console.log(i)
+    //   this.create(meet_id, i)
+    // })
 
 
 
@@ -91,7 +91,6 @@ export class Meet extends Map<string, Chat> {
 
   create(meet_id: string, user_id: string) {
     const chat = new Chat(this, meet_id, socketCore)
-    console.log("create")
     this.set(user_id, chat)
     return chat
   }

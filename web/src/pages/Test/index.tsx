@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Button, Input } from "antd";
 import { Meet } from "../../core/meet.ts";
-import { meet } from "../../core";
+import { meet, videoController } from "../../core";
 import { Tools } from "../../core/tools.ts";
 const Test = () => {
   const { current } = useRef<Meet>(meet);
@@ -12,22 +12,11 @@ const Test = () => {
     if (video.current) {
       (async () => {
         video.current.srcObject = await meet.mediaController.getUserMedia();
+        // remoteVideo.current.srcObject = await meet.mediaController.getUserMedia();
       })();
     }
   }, []);
 
-  // setTimeout(()=>{
-  //   if(remoteVideo.current!=null){
-  //     console.log("remoteVideo")
-  //     console.log(core.peerController.host);
-
-  //     core.peerController.host.addEventListener("track",event=>{
-  //       console.log("track")
-  //       const [remoteStream] = event.streams;
-  //       remoteVideo.current!.srcObject = remoteStream;
-  //     })
-  //   }
-  // },3000)
   const [meet_id, setMeetId] = useState("");
   const createMeeting = async () => {
     current.createMeeting();
@@ -45,58 +34,6 @@ const Test = () => {
     current.leaveMeeting();
   };
 
-  // console.log(video);
-  // useEffect(() => {
-  //   if (video.current == null) return;
-  //   // Put variables in global scope to make them available to the browser console.
-  //   const constraints = {
-  //     audio: false,
-  //     video: true,
-  //   };
-
-  //   navigator.mediaDevices
-  //     .getUserMedia(constraints)
-  //     .then((stream) => {
-  //       const videoTracks = stream.getVideoTracks();
-  //       console.log("Got stream with constraints:", constraints);
-  //       console.log(`Using video device: ${videoTracks[0].label}`);
-  //       stream.onremovetrack = () => {
-  //         console.log("Stream ended");
-  //       };
-  //       console.log(video.current?.srcObject);
-  //       console.log(stream);
-  //       video.current!.srcObject = stream;
-  //     })
-  //     .catch((error) => {
-  //       if (error.name === "OverconstrainedError") {
-  //         console.error(
-  //           `The resolution ${constraints.video.width.exact}x${constraints.video.height.exact} px is not supported by your device.`,
-  //         );
-  //       } else if (error.name === "NotAllowedError") {
-  //         console.error(
-  //           "You need to grant this page permission to access your camera and microphone.",
-  //         );
-  //       } else {
-  //         console.error(`getUserMedia error: ${error.name}`, error);
-  //       }
-  //     });
-  // }, [video]);
-
-  // useEffect(() => {
-  //   const p = new RTCPeer();
-  //   console.log(p);
-  //   p.aa().then((r) => {
-  //     console.log(r);
-  //   });
-  //   // const processVideo = new VideoFrame({
-
-  //   // })
-  //   // new VideoDecoder({
-  //   //     output:processVideo,
-  //   //     error:onEncoderError
-  //   // })
-  // }, []);
-
   return (
     <>
       <video
@@ -107,6 +44,7 @@ const Test = () => {
         style={{ background: "blue" }}
       ></video>
       <video
+       id="remoteVideo"
         ref={remoteVideo}
         autoPlay
         height={100}

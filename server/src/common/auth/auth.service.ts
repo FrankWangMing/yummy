@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 import { Token } from './models/token.model'
 import { SecurityConfig } from 'src/common/configs/config.interface'
-import { PrismaService } from 'nestjs-prisma'
 import { log } from 'console'
 import { JwtDto } from './users/jwt.dto'
 
@@ -12,7 +11,6 @@ export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-    private prisma: PrismaService
   ) {}
 
   async generateTokens(payload: { userId: string }): Promise<Token> {
