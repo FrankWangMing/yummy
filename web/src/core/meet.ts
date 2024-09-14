@@ -19,8 +19,8 @@ export class Meet extends Map<string, Chat> {
       console.log(message)
 
       //有人加入，创建 chat
-      this.create(this.meet_id, message.user_id)
-
+      const chat = this.create(this.meet_id, message.user_id)
+      chat.call()
     })
 
   }
@@ -93,6 +93,7 @@ export class Meet extends Map<string, Chat> {
     const chat = new Chat(this, meet_id, socketCore)
     console.log("create")
     this.set(user_id, chat)
+    return chat
   }
 }
 
