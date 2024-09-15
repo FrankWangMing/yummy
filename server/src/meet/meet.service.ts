@@ -46,5 +46,12 @@ export class MeetService {
   }
 
 
+  async updateUserIdInMeet(meet_id: string, user_ids: string[]) {
+    return await this.meetModel.updateOne({ meet_id }, {
+      $set: { user_ids: user_ids }
+    })
+  }
+
+
 
 }

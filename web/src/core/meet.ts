@@ -48,6 +48,8 @@ export class Meet extends Map<string, Chat> {
     if (socketCore.socket.connected) {
       await this.api.leaveMeet(this.meet_id)
       await this.socketCore.socket.disconnect()
+
+
     }
 
   }

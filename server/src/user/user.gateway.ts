@@ -6,9 +6,10 @@ import {
   WsResponse,
   OnGatewayInit,
   OnGatewayConnection,
-  OnGatewayDisconnect
+  OnGatewayDisconnect,
+  WebSocketServer
 } from '@nestjs/websockets'
-import { Socket } from 'socket.io'
+import { Server, Socket } from 'socket.io'
 import { Inject } from '@nestjs/common'
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager'
 import { User } from './schemas/user.schema'
@@ -16,6 +17,7 @@ import { Model } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose'
 import { UserService } from './user.service'
 import { MeetService } from 'src/meet/meet.service'
+import { get } from 'lodash'
 
 @WebSocketGateway({
   namespace: 'meet',
@@ -33,6 +35,7 @@ export class UserGateway
     public meetService: MeetService,
   ) { }
 
+  @WebSocketServer() server: Server
 
   afterInit(socket: Socket) {
     socket.on('connect', (r) => {
@@ -47,22 +50,25 @@ export class UserGateway
   }
 
   async handleDisconnect(socket: Socket): Promise<any> {
-    // try {
-    //   console.log(socket.id)
-    //   const r = await this.userService.findOne({
-    //     socket_id: socket.id
-    //   })
-    //   console.log("handleDisconnect", r)
-    //   socket.to(r.meet_id).except(socket.id).emit('leaveMeet', {
-    //     message: "掉线",
-    //     user_id: r.user_id
-    //   })
-    //   await this.meetService.deleteUserIdInMeet(r.meet_id, r.user_id)
-    //   console.log(r)
-    // } catch (error) {
-    //   console.log(error)
-    // }
+    const r = await this.userService.findOne({
+      socket_id: socket.id
+    })
+    const meet_id = get(r, 'meet_id', null)
+    const user_id = get(r, 'user_id', null)
+    if (meet_id && user_id) {
+      try {
+        socket.to(meet_id).except(socket.id).emit('leaveMeet', {
+          message: "掉线",
+          user_id
+        });
+        socket.leave(meet_id);
+        this.meetService.deleteUserIdInMeet(r.meet_id, user_id)
+        console.log(r)
+      } catch (error) {
+        console.log(error)
+      }
 
+    }
   }
 
 

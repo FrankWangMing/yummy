@@ -57,7 +57,7 @@ export class Peer extends RTCPeerConnection {
       //   this.videoController.get("remote")
       // )
       // console.log(document.getElementById("remoteVideo"))
-      // document.getElementById("remoteVideo")!.srcObject = event.streams[0];
+      document.getElementById("remoteVideo")!.srcObject = event.streams[0];
     }
     localStream.getTracks().forEach(track => {
       // console.log("track", track)
