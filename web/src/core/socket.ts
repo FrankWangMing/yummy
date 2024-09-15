@@ -38,6 +38,13 @@ export class SocketCore {
     });
   }
 
+  sendToUserMessage(user_id: string, type: MessageType, data: Record<string, unknown> = {}): Socket {
+    return this.sendMessage(type, {
+      ...data,
+      other_user_id: user_id
+    })
+  }
+
   online() {
     let user_id = Tools.UserID()
     this.sendMessage("YummyConnect", {

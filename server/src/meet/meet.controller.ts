@@ -47,12 +47,9 @@ export class MeetController {
   }
 
   @Post('join')
-  joinMeet(@Body() body, @Headers('user_id') user_id: string) {
+  async joinMeet(@Body() body, @Headers('user_id') user_id: string) {
     const { meet_id, socket_id } = body
-    this.meetGateWay.server.to(meet_id).emit("joinMeet", {
-      user_id
-    })
-    return this.meetService.joinMeet({
+    return await this.meetService.joinMeet({
       user_id,
       meet_id,
     })

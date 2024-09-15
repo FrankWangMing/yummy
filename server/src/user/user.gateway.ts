@@ -43,17 +43,17 @@ export class UserGateway
       this.handleDisconnect(socket)
     })
   }
-  handleConnection(client: Socket): any {
+  handleConnection(socket: Socket): any {
   }
 
-  async handleDisconnect(client: Socket): Promise<any> {
+  async handleDisconnect(socket: Socket): Promise<any> {
     // try {
-    //   console.log(client.id)
+    //   console.log(socket.id)
     //   const r = await this.userService.findOne({
-    //     socket_id: client.id
+    //     socket_id: socket.id
     //   })
     //   console.log("handleDisconnect", r)
-    //   client.to(r.meet_id).except(client.id).emit('leaveMeet', {
+    //   socket.to(r.meet_id).except(socket.id).emit('leaveMeet', {
     //     message: "掉线",
     //     user_id: r.user_id
     //   })
@@ -75,25 +75,27 @@ export class UserGateway
 
 
   @SubscribeMessage('call')
-  call(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
+  async call(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
     console.log("call", data)
-    client.to(data.meet_id).emit('call', data)
+    const { other_user_id } = data
+    const { socket_id } = await this.userService.findOne({ user_id: other_user_id });
+    socket.to(socket_id).emit('call', data)
 
   }
 
 
   @SubscribeMessage('answer')
-  answer(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
+  async answer(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
     console.log(data)
-    const { meet_id } = data
-    const event = 'answer'
-    console.log(meet_id)
-    client.to(meet_id).emit('answer', data)
+    const { meet_id, other_user_id } = data
+    const { socket_id } = await this.userService.findOne({ user_id: other_user_id });
+    socket.to(socket_id).emit('answer', data)
   }
 
   @SubscribeMessage('iceCandidate')
-  handleEvent(@MessageBody() data: unknown): WsResponse<unknown> {
-    const event = 'events'
-    return { event: "iceCandidate", data }
+  async handleEvent(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
+    const { meet_id, other_user_id } = data
+    const { socket_id } = await this.userService.findOne({ user_id: other_user_id });
+    socket.to(socket_id).emit('iceCandidate', data)
   }
 }

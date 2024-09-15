@@ -1,12 +1,12 @@
 export class MediaController {
   navigator: Navigator = navigator;
-  constructor() {}
+  constructor() { }
   get mediaDevices() {
     return this.navigator.mediaDevices;
   }
   async getUserMedia() {
     return await this.mediaDevices.getUserMedia({
-      audio: true,
+      audio: false,
       video: true,
     });
   }

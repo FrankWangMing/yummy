@@ -10,14 +10,15 @@ export class Peer extends RTCPeerConnection {
     public chat: Chat,
   ) {
     super(
-    //    { iceServers: [
-    //     {
-    //       urls: 'stun:stun.l.google.com:19302'
-    //     }
-    //   ],
-    //   iceTransportPolicy: 'all'
-    // }
-  )
+      {
+        iceServers: [
+          {
+            urls: 'stun:stun.l.google.com:19302'
+          }
+        ],
+        iceTransportPolicy: 'all'
+      }
+    )
     this.videoController = chat.meet.videoController
   }
 
@@ -26,7 +27,7 @@ export class Peer extends RTCPeerConnection {
 
     this.onicecandidate = (event) => {
       if (event.candidate) {
-        this.chat.socketCore.sendMessage("iceCandidate", {
+        this.chat.socketCore.sendToUserMessage(this.chat.other_user_id, "iceCandidate", {
           candidate: event.candidate,
           // candidate: event.candidate.candidate,
           // sdpMid :event.candidate.sdpMid,
@@ -48,15 +49,15 @@ export class Peer extends RTCPeerConnection {
     };
 
     this.ontrack = (event) => {
-      console.log("ontrack",event)
+      // console.log("ontrack", event)
       // !.setState({
       //   srcObject:event.streams[0]
       // })
       // console.log(
       //   this.videoController.get("remote")
       // )
-      console.log(document.getElementById("remoteVideo"))
-      document.getElementById("remoteVideo")!.srcObject = event.streams[0];
+      // console.log(document.getElementById("remoteVideo"))
+      // document.getElementById("remoteVideo")!.srcObject = event.streams[0];
     }
     localStream.getTracks().forEach(track => {
       // console.log("track", track)

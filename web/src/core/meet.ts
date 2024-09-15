@@ -4,6 +4,8 @@ import { Chat } from './chat.ts'
 import { socketCore } from './index.ts'
 import { Api } from './http.ts'
 import { VideoController } from './videoDom.tsx'
+import { forEach, isEqual } from 'lodash'
+import { Tools } from './tools.ts'
 
 export class Meet extends Map<string, Chat> {
   meet_id!: string
@@ -17,9 +19,10 @@ export class Meet extends Map<string, Chat> {
 
     socketCore.on("joinMeet", (message: any) => {
       console.log(message)
+      const other_user_id = message.user_id
 
       //有人加入，创建 chat
-      const chat = this.create(this.meet_id, message.user_id)
+      const chat = this.create(this.meet_id, other_user_id)
       chat.makeCall(message.user_id)
 
     })
@@ -51,13 +54,26 @@ export class Meet extends Map<string, Chat> {
 
   async joinMeeting(meet_id: string) {
     this.meet_id = meet_id
-    const r = await this.api.joinMeet(meet_id)
+    const { user_ids } = await this.api.joinMeet(meet_id)
+    console.log(user_ids)
+    forEach(user_ids, user_id => {
+      if (!isEqual(user_id, Tools.UserID())) {
+        console.log(user_id)
+        console.log(Tools.UserID())
+        console.log(isEqual(user_id, Tools.UserID()))
+        this.create(meet_id, user_id)
+        this.socketCore.sendToUserMessage(user_id, 'joinMeet', {
+          meet_id,
+        })
+      }
+    })
+    // this.create(this.meet_id, other_user_id)
+
+
+
     // console.log(r)
     // const { user_ids } = r
-    // forEach(user_ids, i => {
-    //   console.log(i)
-    //   this.create(meet_id, i)
-    // })
+
 
 
 
@@ -89,9 +105,10 @@ export class Meet extends Map<string, Chat> {
 
   }
 
-  create(meet_id: string, user_id: string) {
-    const chat = new Chat(this, meet_id, socketCore)
-    this.set(user_id, chat)
+  create(meet_id: string, other_user_id: string) {
+    console.log("new Chart")
+    const chat = new Chat(this, meet_id, socketCore, other_user_id)
+    this.set(other_user_id, chat)
     return chat
   }
 }

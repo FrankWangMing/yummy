@@ -15,12 +15,13 @@ export class MeetService {
     console.log("params", params)
     const { meet_id, user_id } = params
     await this.userModel.updateOne({ user_id }, { $set: { meet_id } })
-    const result = await this.meetModel.findOneAndUpdate(
+    await this.meetModel.findOneAndUpdate(
       { meet_id, user_ids: { $ne: user_id } },
       { $push: { user_ids: user_id } },
       { new: true, upsert: false, runValidators: true }
     )
-    return result
+    console.log(meet_id)
+    return this.findOne({ meet_id })
   }
   findOne(argument) {
     return this.meetModel.findOne(argument)

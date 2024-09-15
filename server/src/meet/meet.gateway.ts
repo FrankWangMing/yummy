@@ -2,6 +2,7 @@ import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSo
 import { MeetService } from './meet.service'
 import { Server, Socket } from 'socket.io'
 import { UserService } from '../user/user.service'
+import { isEqual } from 'lodash'
 
 @WebSocketGateway({
   namespace: 'meet',
@@ -28,23 +29,26 @@ export class MeetGateway {
   }
 
   @SubscribeMessage('joinMeet')
-  join(@MessageBody() data, @ConnectedSocket() socket: Socket) {
-    // socket.leave()
-    // socket.to(data)
-    console.log(data)
-    const { meet_id, user_id } = data
-    // socket.to(meet_id).emit('joinMeet',{name:'join',socket_id:socket.id})
+  async join(@MessageBody() data, @ConnectedSocket() socket: Socket) {
+
+    const { meet_id, user_id, other_user_id } = data
 
     socket.join(meet_id)
 
-    socket
-      .to(meet_id)
-      .emit('joinMeet', {
+    const { socket_id } = await this.userService.findOne({ user_id: other_user_id });
+
+    try {
+      const response = await socket.to(socket_id).emitWithAck('joinMeet', {
         name: 'joinMeet',
         meet_id,
         user_id,
-        socket_id: socket.id
       })
+      console.log(response)
+    } catch (err) {
+      console.log(err)
+      // the client did not acknowledge the event in the given delay
+    }
+
     // // socket.emit("joinMeet",{name:'join',socket_id:socket.id})
     // // return this.meetService.findAll()
     // const event = 'call'
