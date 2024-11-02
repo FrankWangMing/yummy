@@ -67,7 +67,6 @@ export class UserGateway
       } catch (error) {
         console.log(error)
       }
-
     }
   }
 

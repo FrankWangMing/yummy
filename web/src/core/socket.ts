@@ -1,7 +1,7 @@
 import { Manager, Socket } from "socket.io-client";
-import { generateUUID, Tools } from "./tools";
+import { Tools } from "./tools";
+import { webSocketUrl } from "../config/baseConfig";
 
-const webSocketUrl = "ws://localhost:3000";
 // const webSocketUrl = "ws://101.42.33.99:3000"
 
 type MessageType =
@@ -17,7 +17,9 @@ type MessageType =
 export class SocketCore {
   socket: Socket;
   constructor() {
-    const manager = new Manager(webSocketUrl, {});
+    const manager = new Manager(webSocketUrl, {
+      withCredentials: false,
+    });
     this.socket = manager.socket("/meet");
     this.socket.connect()
     this.socket.once("connect", () => {

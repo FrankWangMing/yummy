@@ -1,5 +1,5 @@
-import { observer } from "mobx-react-lite";
 import "./meet.less";
+import { observer } from "mobx-react-lite";
 import NavBar from "./components/NavBar";
 import { Col, Row } from "antd";
 import LiveContent from "./components/LiveContent";
