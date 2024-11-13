@@ -1,5 +1,10 @@
+import { Button } from "antd";
 import { observer } from "mobx-react-lite";
 
 export default observer(() => {
-  return <div></div>;
+  return (
+    <div>
+      <Button>分享</Button>
+    </div>
+  );
 });

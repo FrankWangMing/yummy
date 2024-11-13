@@ -25,11 +25,11 @@ echo "$counter" > "$counter_file"
 
 docker login 120.26.170.100:8882
 
-docker build -t 120.26.170.100:8882/$project_name/backend:$counter --platform linux/amd64 -f Dockerfile .
+docker build -t 120.26.170.100:8882/$project_name/fronted:$counter --platform linux/amd64 -f Dockerfile .
 
-docker push 120.26.170.100:8882/$project_name/backend:$counter
+docker push 120.26.170.100:8882/$project_name/fronted:$counter
 
-echo "sudo docker rm -f yummy-backend && sudo docker run -p 3000:3000 --name $project_name-backend -it -d 120.26.170.100:8882/$project_name/backend:$counter"
+echo "sudo docker rm -f yummy-fronted && sudo docker run -p 8899:80 --name $project_name-fronted -it -d 120.26.170.100:8882/$project_name/fronted:$counter"
 
 
 

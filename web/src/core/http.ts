@@ -8,7 +8,7 @@ export class Api {
         public socketCore: SocketCore,
     ) {
         this.http = axios.create({
-            baseURL: 'http://localhost:3000', // 使用完整的 baseURL
+            baseURL: import.meta.env.MODE == "development" ? 'http://localhost:3000' : "http://49.233.216.137:3000", // 使用完整的 baseURL
             headers: {
                 'Content-Type': 'application/json',
                 user_id: Tools.UserID(),

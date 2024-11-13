@@ -11,15 +11,9 @@ type FieldType = {
 };
 
 export const LoginForm = observer(() => {
-  const navigate = useNavigate();
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
     console.log("Success:", values);
   };
-  const onMeetFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    console.log("Success:", values);
-    navigate("/meeting");
-  };
-
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
     errorInfo,
   ) => {
@@ -51,29 +45,6 @@ export const LoginForm = observer(() => {
         <Form.Item>
           <Button type="primary" htmlType="submit" className="button">
             <span className="button-text">Sign in</span>
-          </Button>
-        </Form.Item>
-        <div></div>
-        <Divider className="divider">
-          <div className="divider-content">OR</div>
-        </Divider>
-      </Form>
-      <Form
-        name="meeting"
-        style={{ maxWidth: 600 }}
-        initialValues={{ remember: true }}
-        onFinish={onMeetFinish}
-        autoComplete="off"
-      >
-        <Form.Item<FieldType>
-          name="meetingID"
-          rules={[{ required: true, message: "Please input your Meeting ID!" }]}
-        >
-          <Input value={123} placeholder="Meeting ID" className="input" />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit" className="button">
-            <span className="button-text">Join Meeting</span>
           </Button>
         </Form.Item>
       </Form>

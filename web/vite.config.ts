@@ -29,13 +29,25 @@ export default defineConfig((e) => {
   if (mode == 'production') {
     Object.assign(config,
       {
-        preview: {
-          proxy: {
-            "/socket.io": {
-              target: "http://49.233.216.137:3000",
-              changeOrigin: true,
+        build: {
+          rollupOptions: {
+            output: {
+              manualChunks(id) {
+                if (id.includes('node_modules')) {
+                  return 'vendor'; // 将 node_modules 打包到 vendor.js 中
+                }
+                if (id.includes('src/components')) {
+                  return 'components'; // 单独拆分组件代码
+                }
+              }
             },
-          }
+          },
+          cacheDir: 'node_modules/.vite_cache',
+          minify: 'esbuild', // 使用 esbuild 进行最小化
+          esbuild: {
+            worker: true
+          },
+          target: 'esnext' // 针对较新的浏览器，可以避免转译
         }
       }
     )

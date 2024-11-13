@@ -3,6 +3,7 @@ import { Button, Input } from "antd";
 import { Meet } from "../../core/meet.ts";
 import { meet, videoController } from "../../core";
 import { Tools } from "../../core/tools.ts";
+import React from "react";
 const Test = () => {
   const { current } = useRef<Meet>(meet);
   console.log(current);

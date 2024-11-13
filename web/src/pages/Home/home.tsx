@@ -1,5 +1,8 @@
-import { LoginForm } from "./LoginForm";
+import CreateMeeting from "./CreateMeeting";
+import Join from "./Join";
 import "./home.less";
+import "./form.less";
+import { Divider } from "antd";
 export default function Example() {
   return (
     <div className="home-container flex h-screen w-screen justify-center items-center bg-color">
@@ -14,10 +17,14 @@ export default function Example() {
           </div>
         </div>
         <div className="sign-in-box">
-          <div className="sign-in-text">
+          {/* <div className="sign-in-text">
             <div>Sign-in</div>
-          </div>
-          <LoginForm />
+          </div> */}
+          <CreateMeeting />
+          <Divider className="divider">
+            <div className="divider-content">OR</div>
+          </Divider>
+          <Join />
         </div>
       </div>
     </div>
