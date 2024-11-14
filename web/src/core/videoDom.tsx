@@ -1,5 +1,4 @@
-import React from "react";
-import { createElement, forwardRef, useImperativeHandle, useRef } from "react";
+import { useImperativeHandle, useRef } from "react";
 import { Tools } from "./tools";
 
 // const VideoDom = ()=>{
@@ -17,8 +16,8 @@ import { Tools } from "./tools";
 const VideoDom =  ()=> {
     const ref = useRef<HTMLVideoElement | null>(null)
     useImperativeHandle(ref, () => ({
-        play: () => {
-            ref.current?.play()
+        play: async () => {
+            await ref.current?.play()
         }
     }))
     return <video key={Tools.uuid()} ref={ref} />
@@ -27,7 +26,6 @@ const VideoDom =  ()=> {
 export class VideoController extends Map<string, any> {
     constructor() {
         super();
-        this.create()
     }
     render() {
         return Array.from(this.values()).map((f) => {

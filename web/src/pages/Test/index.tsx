@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Button, Input } from "antd";
-import { Meet } from "../../core/meet.ts";
-import { meet, videoController } from "../../core";
+import { MeetController } from "../../core/meet.ts";
+import { meet } from "../../core";
 import { Tools } from "../../core/tools.ts";
-import React from "react";
 const Test = () => {
-  const { current } = useRef<Meet>(meet);
+  const { current } = useRef<MeetController>(meet);
   console.log(current);
   const video = useRef<HTMLVideoElement | null>(null);
   const remoteVideo = useRef<HTMLVideoElement | null>(null);

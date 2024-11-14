@@ -6,6 +6,7 @@ import LiveContent from "./components/LiveContent";
 import Controller from "./components/Controller";
 import UserList from "./UserList";
 import Chat from "./Chat";
+import { videoController } from "../../core";
 const Meet = observer(() => {
   return (
     <div className="meet-background">
@@ -14,10 +15,9 @@ const Meet = observer(() => {
           <div className="meet-content-navbar">
             <NavBar />
           </div>
-
           <div className="meet-content-live">
             <Row gutter={[12, 12]} justify="center">
-              {[1, 23, 4, 5, 6, 6].map((item) => {
+              {videoController.values().map((item) => {
                 return (
                   <Col span={8} className="meet-content-live-item">
                     <LiveContent />

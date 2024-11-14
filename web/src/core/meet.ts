@@ -7,7 +7,7 @@ import { VideoController } from './videoDom.tsx'
 import { forEach, isEqual } from 'lodash'
 import { Tools } from './tools.ts'
 
-export class Meet extends Map<string, Chat> {
+export class MeetController extends Map<string, Chat> {
   meet_id!: string
   constructor(
     public api: Api,
@@ -48,21 +48,16 @@ export class Meet extends Map<string, Chat> {
     if (socketCore.socket.connected) {
       await this.api.leaveMeet(this.meet_id)
       await this.socketCore.socket.disconnect()
-
-
     }
-
   }
 
   async joinMeeting(meet_id: string) {
     this.meet_id = meet_id
     const { user_ids } = await this.api.joinMeet(meet_id)
-    console.log(user_ids)
+
+
     forEach(user_ids, user_id => {
       if (!isEqual(user_id, Tools.UserID())) {
-        console.log(user_id)
-        console.log(Tools.UserID())
-        console.log(isEqual(user_id, Tools.UserID()))
         this.create(meet_id, user_id)
         this.socketCore.sendToUserMessage(user_id, 'joinMeet', {
           meet_id,
