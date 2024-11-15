@@ -1,14 +1,21 @@
 import { observer } from "mobx-react-lite";
 import "./LiveContent.less";
-export default observer(() => {
+import { useImperativeHandle } from "react";
+import { useRef } from "react";
+import { forwardRef } from "react";
+export default  forwardRef((props, ref) => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  useImperativeHandle(ref, () => ({
+      play: async () => {
+          await videoRef.current?.play();
+      },
+      setVideo: (video) => {
+          videoRef.current.srcObject = video;
+      }
+  }));
   return (
-    <div className="content">
-      <video className="content-video" autoPlay controls>
-        <source
-          src="https://media.w3.org/2010/05/sintel/trailer.mp4"
-          type="video/mp4"
-        />
-        <source src="movie.ogg" type="video/ogg" />
+    <div className="content" >
+      <video ref={videoRef} className="content-video" autoPlay >
       </video>
     </div>
   );

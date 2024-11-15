@@ -2,7 +2,7 @@ import { SocketCore } from './socket.ts'
 import { MediaController } from './medias.ts'
 import { MeetController } from './meet.ts'
 import { Api } from './http.ts'
-import { VideoController } from './videoDom.tsx'
+import { VideoController } from './video.ts'
 
 export const socketCore = new SocketCore()
 export const mediaController: MediaController = new MediaController()

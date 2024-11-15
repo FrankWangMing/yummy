@@ -1,5 +1,5 @@
 import { Chat } from "./chat";
-import { VideoController } from "./videoDom";
+import { VideoController } from "./video";
 
 
 
@@ -57,7 +57,8 @@ export class Peer extends RTCPeerConnection {
       //   this.videoController.get("remote")
       // )
       // console.log(document.getElementById("remoteVideo"))
-      document.getElementById("remoteVideo")!.srcObject = event.streams[0];
+      // document.getElementById("remoteVideo")!.srcObject = event.streams[0];
+      this.chat.video.setSrcObject(event.streams[0])
     }
     localStream.getTracks().forEach(track => {
       // console.log("track", track)

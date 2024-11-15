@@ -1,14 +1,16 @@
 import { Peer } from "./peer";
 import { SocketCore } from "./socket";
-import { Meet } from './meet.ts'
+import { MeetController } from './meet.ts'
 import { Tools } from "./tools.ts";
+import { Video } from "./video.ts";
+import { videoController } from "./index.ts";
 
 export class Chat {
     public local: Peer | undefined
     public list: any = []
-
+    public video: Video
     constructor(
-        public meet: Meet,
+        public meet: MeetController,
         public meet_id: string,
         public socketCore: SocketCore,
         public other_user_id: string
@@ -16,6 +18,7 @@ export class Chat {
         this.socketCore.on("iceCandidate", this.handleCandidate.bind(this))
         this.socketCore.on("call", this.handleOffer.bind(this))
         this.socketCore.on("answer", this.handleAnswer.bind(this))
+        this.video = videoController.create(other_user_id)
     }
 
     async makeCall(user_id) {
@@ -33,10 +36,6 @@ export class Chat {
     }
 
     async handleOffer({ offer }) {
-        console.log(offer)
-        console.log(this.local)
-
-
         const peerConnection = new Peer(this)
         await peerConnection.init()
         if (!this.local) {

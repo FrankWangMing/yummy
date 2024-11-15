@@ -1,6 +1,8 @@
-import { Input, Button, Form, FormProps } from "antd";
-import React from "react";
+import { Button, Form, FormProps } from "antd";
+import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { meet } from "../../core";
+import { MeetController } from "../../core/meet";
 type FieldType = {
   username?: string;
   password?: string;
@@ -9,9 +11,16 @@ type FieldType = {
 };
 export default function CreateMeeting() {
   const navigate = useNavigate();
+  const { current } = useRef<MeetController>(meet);
   const onMeetFinish: FormProps<FieldType>["onFinish"] = (values) => {
     console.log("Success:", values);
-    navigate("/meeting");
+      current.createMeeting().then((meet_id) => {
+        console.log("create meeting success",meet_id);
+        const queryParams = new URLSearchParams({
+          meet_id
+        }).toString();
+        navigate("/meeting?"+queryParams);
+      });
   };
 
   return (
