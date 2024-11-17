@@ -1,6 +1,7 @@
 import { observer } from "mobx-react-lite";
 import "./chat.less";
 import { Button, Input } from "antd";
+import { meet } from "../../../core";
 
 const Message = observer(() => {
   return (
@@ -25,6 +26,7 @@ const Message = observer(() => {
 });
 
 const Chat = observer(() => {
+  console.log(meet.activeChat);
   return (
     <div className="chat-container">
       <div className="chat-content-head">
@@ -43,13 +45,19 @@ const Chat = observer(() => {
 export default Chat;
 
 const InputMessage = observer(() => {
+  const send = () => {
+    console.log("send");
+    meet.activeChat.sendMessage("test");
+  };
   return (
     <div className="chat-content-message-input-container">
       <Input.TextArea
         placeholder="Message to everyone..."
         className="chat-content-message-input-area"
       ></Input.TextArea>
-      <Button className="chat-content-message-input-send">发送</Button>
+      <Button className="chat-content-message-input-send" onClick={send}>
+        发送
+      </Button>
     </div>
   );
 });

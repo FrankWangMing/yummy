@@ -1,3 +1,4 @@
+import { MessageChannel } from "./MessageChannel";
 import { Chat } from "./chat";
 import { VideoController } from "./video";
 
@@ -5,6 +6,7 @@ import { VideoController } from "./video";
 
 export class Peer extends RTCPeerConnection {
   public videoController: VideoController
+  public channel: MessageChannel
 
   constructor(
     public chat: Chat,
@@ -14,9 +16,17 @@ export class Peer extends RTCPeerConnection {
         iceServers: [
           {
             urls: 'stun:stun.l.google.com:19302'
-          }
+          },
+          // {
+          //   urls: 'stun:stun1.l.google.com:19302'
+          // },
+          // {
+          //   urls: "turn:relay1.expressturn.com:3478?transport=udp",
+          //   username: "efSLJX5OXVYEN2KJCE",
+          //   credential: "D303uQfv1q2sNfNI"
+          // },
         ],
-        iceTransportPolicy: 'all'
+        iceTransportPolicy: 'all',
       }
     )
     this.videoController = chat.meet.videoController
@@ -46,6 +56,28 @@ export class Peer extends RTCPeerConnection {
     }
     this.onconnectionstatechange = () => {
       console.log("连接状态:", this.connectionState);
+      if (this.connectionState == "connected") {
+        console.log("连接成功")
+
+        this.channel = this.createDataChannel("chat")
+        console.log("channel", this.channel)
+        this.channel.onopen = () => {
+          console.log("datachannel open");
+          const obj = {
+            message: "msg",
+            timestamp: new Date(),
+          };
+          setInterval(() => {
+            console.log("KK", obj)
+            console.log(this.channel)
+            this.channel.send(JSON.stringify(obj));
+          }, 1000);
+        };
+
+        this.channel.onclose = () => console.log("DataChannel is closed");
+        this.channel.onerror = (error) => console.error("DataChannel error:", error);
+
+      }
     };
 
     this.ontrack = (event) => {
@@ -59,6 +91,7 @@ export class Peer extends RTCPeerConnection {
       // console.log(document.getElementById("remoteVideo"))
       // document.getElementById("remoteVideo")!.srcObject = event.streams[0];
       this.chat.video.setSrcObject(event.streams[0])
+      console.log("ontrack", event)
     }
     localStream.getTracks().forEach(track => {
       // console.log("track", track)
@@ -81,6 +114,11 @@ export class Peer extends RTCPeerConnection {
     // localStream.getTracks().forEach(track => pc1.addTrack(track, localStream));
     const offer = await this.initOffer()
     return offer
+  }
+
+
+  getRemoteAudio() {
+    return this.getReceivers().find(r => r.track.kind == "audio")
   }
 
 }
