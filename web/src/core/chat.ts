@@ -5,7 +5,6 @@ import { Tools } from "./tools.ts";
 import { Video } from "./video.ts";
 import { videoController } from "./index.ts";
 import { isEqual } from "lodash";
-import { autorun } from "mobx";
 
 export class Chat {
     private _local: Peer | undefined

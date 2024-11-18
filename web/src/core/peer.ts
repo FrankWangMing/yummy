@@ -17,14 +17,14 @@ export class Peer extends RTCPeerConnection {
           {
             urls: 'stun:stun.l.google.com:19302'
           },
-          // {
-          //   urls: 'stun:stun1.l.google.com:19302'
-          // },
-          // {
-          //   urls: "turn:relay1.expressturn.com:3478?transport=udp",
-          //   username: "efSLJX5OXVYEN2KJCE",
-          //   credential: "D303uQfv1q2sNfNI"
-          // },
+          {
+            urls: 'stun:stun1.l.google.com:19302'
+          },
+          {
+            urls: "turn:relay1.expressturn.com:3478?transport=udp",
+            username: "efSLJX5OXVYEN2KJCE",
+            credential: "D303uQfv1q2sNfNI"
+          },
         ],
         iceTransportPolicy: 'all',
       }

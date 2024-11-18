@@ -28,6 +28,7 @@ WORKDIR /app
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./
+COPY --from=builder /app/nginx ./nginx
 COPY --from=builder /app/.env ./
 
 # Expose the port that NestJS runs on

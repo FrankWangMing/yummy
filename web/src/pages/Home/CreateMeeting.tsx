@@ -16,6 +16,10 @@ export default function CreateMeeting() {
     console.log("Success:", values);
       current.createMeeting().then((meet_id) => {
         console.log("create meeting success",meet_id);
+        if(!meet_id){
+          alert("create meeting failed")
+          return
+        }
         const queryParams = new URLSearchParams({
           meet_id
         }).toString();

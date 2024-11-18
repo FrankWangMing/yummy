@@ -1,6 +1,6 @@
 import { ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { HttpAdapterHost, NestFactory } from '@nestjs/core'
+import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { AppModule } from './app.module'
 import type {
@@ -9,14 +9,24 @@ import type {
   SwaggerConfig
 } from 'src/common/configs/config.interface'
 import { TransformInterceptor } from './common/interception/transform.interception'
-
+import * as fs from 'fs';
+const path = require('path');
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule)
+  const keyPath = path.resolve(__dirname, '../nginx/yummy.frankwm.cn.key');
+  const certPath = path.resolve(__dirname, '../nginx/yummy.frankwm.cn_bundle.crt');
+  const httpsOptions = {
+    key:  fs.readFileSync(keyPath) ,  // 私钥文件
+    cert: fs.readFileSync(certPath),  // 证书文件
+  };
+  const app = await NestFactory.create(AppModule,{
+    httpsOptions,
+  })
+
+  app.setGlobalPrefix('api');
 
   // Validation
   app.useGlobalPipes(new ValidationPipe())
 
-  // Prisma Client Exception Filter for unhandled exceptions
   const configService = app.get(ConfigService)
   const nestConfig = configService.get<NestConfig>('nest')
   const corsConfig = configService.get<CorsConfig>('cors')
@@ -31,7 +41,6 @@ async function bootstrap() {
       .setVersion(swaggerConfig.version || '1.0')
       .build()
     const document = SwaggerModule.createDocument(app, options)
-
     SwaggerModule.setup(swaggerConfig.path || 'api', app, document)
   }
 
