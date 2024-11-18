@@ -37,8 +37,7 @@
 
 #### 克隆仓库
 ```bash
-git clone https://github.com/your-username/your-project.git
-cd your-project
+git clone https://github.com/FrankWangMing/yummy.git
 ```
 
 #### 安装依赖
