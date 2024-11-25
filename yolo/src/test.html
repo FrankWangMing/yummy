@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>YOLOv8 Object Detection with TensorFlow.js</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  </head>
+  <body>
+    <input type="file" id="upload" accept="image/*" />
+    <canvas id="canvas"></canvas>
+    <script>
+      async function loadModel() {
+        // 加载模型
+        const model = await tf.loadGraphModel("./best_web_model/model.json");
+        return model;
+      }
+
+      async function predict(model, imageElement) {
+        // 将图像转换为张量
+        const tensor = tf.browser
+          .fromPixels(imageElement)
+          .resizeNearestNeighbor([640, 640]) // 调整大小到模型输入大小
+          .toFloat()
+          .expandDims(0)
+          .div(tf.scalar(255.0));
+
+        // inference
+        const predictions = await model.executeAsync(tensor);
+
+        //  predictions shape is [1, 5, 8400]
+        const reshapedPredictions = predictions.reshape([5, 8400]);
+        const boxesTensor = reshapedPredictions.slice([0, 0], [4, 8400]);
+        const scoresTensor = reshapedPredictions
+          .slice([4, 0], [1, 8400])
+          .squeeze();
+
+        // Assuming that the category label of each box is fixed (you can adjust it as needed)
+        const classesTensor = tf.fill([8400], 0);
+
+        return {
+          boxes: boxesTensor,
+          scores: scoresTensor,
+          classes: classesTensor,
+        };
+      }
+
+      function drawBoxes(imageElement, canvas, boxes, scores, classes) {
+        const ctx = canvas.getContext("2d");
+        canvas.width = imageElement.width;
+        canvas.height = imageElement.height;
+        ctx.drawImage(imageElement, 0, 0, canvas.width, canvas.height);
+
+        const labels = ["企鹅"]; // Replace with actual label
+        const validBoxes = [];
+
+        for (let i = 0; i < scores.length; i++) {
+          if (scores[i] > 0.5) {
+            const x_c = boxes[0][i] / 640;
+            const y_c = boxes[1][i] / 640;
+            const w = boxes[2][i] / 640;
+            const h = boxes[3][i] / 640;
+
+            const x = x_c - w / 2;
+            const y = y_c - h / 2;
+
+            validBoxes.push([x, y, w, h, scores[i], classes[i]]);
+          }
+        }
+
+        validBoxes.forEach((box) => {
+          const [x, y, w, h, score, className] = box;
+          ctx.strokeStyle = "red";
+          ctx.lineWidth = 2;
+          ctx.strokeRect(
+            x * canvas.width,
+            y * canvas.height,
+            w * canvas.width,
+            h * canvas.height
+          );
+          const text = `${className}: ${(score * 100).toFixed(2)}%`;
+          ctx.fillText(text, x * canvas.width, y * canvas.height - 10);
+        });
+      }
+
+      document
+        .getElementById("upload")
+        .addEventListener("change", async (event) => {
+          const file = event.target.files[0];
+          const imageElement = new Image();
+          const reader = new FileReader();
+
+          reader.onload = () => {
+            imageElement.src = reader.result;
+            imageElement.onload = async () => {
+              const canvas = document.getElementById("canvas");
+              const model = await loadModel();
+              const { boxes, scores, classes } = await predict(
+                model,
+                imageElement
+              );
+              drawBoxes(
+                imageElement,
+                canvas,
+                boxes.arraySync(),
+                scores.arraySync(),
+                classes.arraySync()
+              );
+            };
+          };
+
+          reader.readAsDataURL(file);
+        });
+    </script>
+  </body>
+</html>
