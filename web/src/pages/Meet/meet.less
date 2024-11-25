@@ -3,9 +3,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #34363a;
-  height: 100vh;
-  width: 100vw;
+  background-color: #fdfdfd;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
   .meet-container {
     min-width: 75rem;
     width: 75rem;
@@ -29,11 +30,26 @@
       .meet-content-live {
         flex: 1;
         background-color: #101826;
-        padding: 2rem;
+        // padding: 2rem;
         border: 0.06rem solid rgba(55, 65, 81, 0.5);
+        position: relative;
         .meet-content-live-item {
+          // width: 15rem;
+          // height: 11rem;
+          position: absolute; /* 让子元素相对于父元素定位 */
+          top: 0;             /* 距离父元素顶部为 0 */
+          left: 0;            /* 距离父元素左边为 0 */
+          right: 0;           /* 距离父元素右边为 0 */
+          bottom: 0;          /* 距离父元素底部为 0 */
+          // padding: 0 !important;
+        }
+        .meet-content-live-self {
           width: 15rem;
           height: 11rem;
+          position:absolute;
+          bottom: 0;
+          right: 0;
+          z-index: 999;
           // padding: 0 !important;
         }
       }

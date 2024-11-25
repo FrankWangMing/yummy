@@ -12,7 +12,8 @@ type MessageType =
   | "joinMeet"
   | "offer"
   | "call"
-  | "answer";
+  | "answer"
+  | "message";
 
 export class SocketCore {
   socket: Socket;

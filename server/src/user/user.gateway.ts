@@ -87,6 +87,14 @@ export class UserGateway
     socket.to(socket_id).emit('call', data)
 
   }
+  @SubscribeMessage('message')
+  async message(@MessageBody() data: any, @ConnectedSocket() socket: Socket) {
+    console.log("message", data)
+    const { other_user_id } = data
+    const { socket_id } = await this.userService.findOne({ user_id: other_user_id });
+    socket.to(socket_id).emit('message', data)
+  }
+
 
 
   @SubscribeMessage('answer')

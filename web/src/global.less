@@ -41,3 +41,35 @@
     font-size: 8px; /* 调整为10px */
   }
 }
+
+
+@scrollbar-width: 8px;      // 滚动条默认宽度
+@scrollbar-color: gray;      // 滚动条默认颜色
+@scrollbar-hover-color: darkgray; // 滑块悬停颜色
+@scrollbar-active-color: #888;    // 滑块激活颜色
+@scrollbar-track-color: #f0f0f0;  // 滚动条轨道颜色
+
+
+&::-webkit-scrollbar {
+  width: var(--scrollbar-width, @scrollbar-width); // 滚动条宽度
+  height: var(--scrollbar-width, @scrollbar-width); // 横向滚动条高度
+}
+
+&::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-color, @scrollbar-color); // 默认滑块颜色
+  border-radius: 6px; // 圆角
+  transition: background-color 0.3s ease; // 平滑过渡效果
+}
+
+&::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-hover-color, @scrollbar-hover-color); // 滑块悬停颜色
+}
+
+&::-webkit-scrollbar-thumb:active {
+  background-color: var(--scrollbar-active-color, @scrollbar-active-color); // 滑块激活颜色
+}
+
+&::-webkit-scrollbar-track {
+  background: var(--scrollbar-track-color, @scrollbar-track-color); // 轨道背景颜色
+  border-radius: 6px; // 圆角
+}

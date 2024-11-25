@@ -15,11 +15,11 @@ async function bootstrap() {
   const keyPath = path.resolve(__dirname, '../nginx/yummy.frankwm.cn.key');
   const certPath = path.resolve(__dirname, '../nginx/yummy.frankwm.cn_bundle.crt');
   const httpsOptions = {
-    key:  fs.readFileSync(keyPath) ,  // 私钥文件
+    key: fs.readFileSync(keyPath),  // 私钥文件
     cert: fs.readFileSync(certPath),  // 证书文件
   };
-  const app = await NestFactory.create(AppModule,{
-    httpsOptions,
+  const app = await NestFactory.create(AppModule, {
+    httpsOptions: process.env.NODE_ENV !== 'development' && httpsOptions,
   })
 
   app.setGlobalPrefix('api');
@@ -43,7 +43,7 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, options)
     SwaggerModule.setup(swaggerConfig.path || 'api', app, document)
   }
-
+  console.log(nestConfig)
   // Cors
   if (corsConfig.enabled) {
     app.enableCors()

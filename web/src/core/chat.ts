@@ -5,11 +5,13 @@ import { Tools } from "./tools.ts";
 import { Video } from "./video.ts";
 import { videoController } from "./index.ts";
 import { isEqual } from "lodash";
+import { computed, makeObservable, observable } from "mobx";
 
 export class Chat {
     private _local: Peer | undefined
     public list: any = []
     public video: Video
+    public messages: Map<any, string> = new Map()
     constructor(
         public meet: MeetController,
         public meet_id: string,
@@ -19,11 +21,36 @@ export class Chat {
         this.socketCore.on("iceCandidate", this.handleCandidate.bind(this))
         this.socketCore.on("call", this.handleOffer.bind(this))
         this.socketCore.on("answer", this.handleAnswer.bind(this))
+        this.socketCore.on("message", this.handleMessage.bind(this))
         this.video = videoController.create(other_user_id)
+        makeObservable(this, {
+            messages: observable,
+            MessageData: computed
+        })
+    }
+    get MessageData() {
+        return Array.from(this.messages.keys())
     }
     async sendMessage(data) {
         console.log(this.local)
-        this.local.channel.send(data)
+        this.meet.socketCore.sendToUserMessage(this.other_user_id, "message", {
+            data,
+            meet_id: this.meet_id,
+            user_id: Tools.UserID(),
+        })
+        this.messages.set({
+            data,
+            meet_id: this.meet_id,
+            user_id: Tools.UserID(),
+            other_user_id: this.other_user_id,
+            time: Date.now()
+        }, data)
+        // this.local.channel.send(data)
+    }
+    async handleMessage(data) {
+        console.log(data)
+        this.messages.set({ ...data, time: Date.now() }, data.data)
+        // this.local.channel.send(data)
     }
     set local(value) {
         this._local = value

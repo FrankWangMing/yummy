@@ -24,6 +24,8 @@
   }
 
   .chat-content {
+    overflow: hidden;
+    overflow-y: auto;
     padding: 0.2rem;
     flex: 1;
     .chat-content-message-item {
@@ -37,7 +39,7 @@
         margin: 0 0.5rem;
       }
       .chat-content-message-item-content {
-        width: 100%;
+        width: auto;
         .chat-content-message-item-time {
           width: 100%;
           display: flex;

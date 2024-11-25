@@ -12,16 +12,15 @@ import { useEffect } from "react";
 import { Tools } from "../../core/tools";
 const Meet = observer(() => {
   const location = useLocation();
-  const params = new URLSearchParams(location.search);  // 解析查询参数
-  const meetId = params.get('meet_id');  // 获取 meet_id 参数
+  const params = new URLSearchParams(location.search); // 解析查询参数
+  const meetId = params.get("meet_id"); // 获取 meet_id 参数
   console.log(meetId);
 
-  useEffect(()=>{
-    meet.loadMeeting(meetId).then(()=>{
-      console.log("load meeting success")
-    })
-
-  },[])
+  useEffect(() => {
+    meet.loadMeeting(meetId).then(() => {
+      console.log("load meeting success");
+    });
+  }, []);
   return (
     <div className="meet-background">
       <div className="meet-container">
@@ -31,16 +30,37 @@ const Meet = observer(() => {
           </div>
           <div className="meet-content-live">
             <Row gutter={[12, 12]} justify="center">
-              {videoController.data.map((item) => {
-                console.log(item)
-                return (
-                  <Col span={8} key={item.key} className="meet-content-live-item">
-                    <LiveContent  ref={(value)=>{
-                      item.ref = value
-                    }} />
-                  </Col>
-                );
-              })}
+              {videoController.data.length <= 2
+                ? videoController.data.map((item) => {
+                    return (
+                      <div
+                        span={8}
+                        key={item.key}
+                        className={`meet-content-live-${item.key == Tools.UserID() ? "self" : "item"}`}
+                      >
+                        <LiveContent
+                          ref={(value) => {
+                            item.ref = value;
+                          }}
+                        />
+                      </div>
+                    );
+                  })
+                : videoController.data.map((item) => {
+                    return (
+                      <Col
+                        span={8}
+                        key={item.key}
+                        className={`meet-content-live-${item.key == Tools.UserID() ? "self" : "item"}`}
+                      >
+                        <LiveContent
+                          ref={(value) => {
+                            item.ref = value;
+                          }}
+                        />
+                      </Col>
+                    );
+                  })}
             </Row>
           </div>
           <Controller />

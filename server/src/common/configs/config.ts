@@ -2,7 +2,8 @@ import type { Config } from './config.interface'
 
 const config: Config = {
   nest: {
-    port: 3000
+    port: 3000,
+    env: "development"
   },
   cors: {
     enabled: true

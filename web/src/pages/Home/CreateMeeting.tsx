@@ -14,17 +14,17 @@ export default function CreateMeeting() {
   const { current } = useRef<MeetController>(meet);
   const onMeetFinish: FormProps<FieldType>["onFinish"] = (values) => {
     console.log("Success:", values);
-      current.createMeeting().then((meet_id) => {
-        console.log("create meeting success",meet_id);
-        if(!meet_id){
-          alert("create meeting failed")
-          return
-        }
-        const queryParams = new URLSearchParams({
-          meet_id
-        }).toString();
-        navigate("/meeting?"+queryParams);
-      });
+    current.createMeeting().then((meet_id) => {
+      console.log("create meeting success", meet_id);
+      if (!meet_id) {
+        alert("create meeting failed");
+        return;
+      }
+      const queryParams = new URLSearchParams({
+        meet_id,
+      }).toString();
+      navigate("/meeting?" + queryParams);
+    });
   };
 
   return (
