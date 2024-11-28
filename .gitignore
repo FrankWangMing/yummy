@@ -133,3 +133,6 @@ dist
 
 nginx/yummy.frankwm.cn.key
 nginx/yummy.frankwm.cn_bundle.crt
+
+web/nginx/yummy.frankwm.cn.key
+web/nginx/yummy.frankwm.cn_bundle.crt
