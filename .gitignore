@@ -1,5 +1,4 @@
 !/web/node_modules/
 
 
-server/.env
-server/nginx/*
+nginx
